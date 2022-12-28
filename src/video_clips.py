@@ -3,8 +3,12 @@ import torch
 from PIL import Image
 
 
-def pil_loader(filename):
-    """Loads the image."""
+def pil_loader(filename: str):
+    """Loads the image.
+
+    :param filename: image filename
+    :return: RGB image
+    """
     # open path as file to avoid ResourceWarning
     # (https://github.com/python-pillow/Pillow/issues/835)
     with open(filename, 'rb') as f:
@@ -12,8 +16,13 @@ def pil_loader(filename):
             return img.convert('RGB')
 
 
-def load_clip_frames(video_dir, clip_length):
-    """Loads all the possible video clips of length clip_length from the video directory."""
+def load_clip_frames(video_dir: str, clip_length: int):
+    """Loads all the possible video clips of length clip_length from the video directory.
+
+    :param video_dir: path of the directory containing the video frames
+    :param clip_length: number of consecutive frames in a clip
+    :return: list of all the possible clips
+    """
     frame_count = len(os.listdir(video_dir))
     max_start_index = frame_count - clip_length + 1
 
@@ -33,10 +42,15 @@ def load_clip_frames(video_dir, clip_length):
     return clips
 
 
-def load_clips(video_dir, spatial_transform, clip_length):
+def load_clips(video_dir: str, spatial_transform, clip_length: int):
     """
     Loads all the possible video clips from the video directory, with spatial transformations
     (cropping, flipping, normalization) applied similarly to all the frames of a clip.
+
+    :param video_dir: path of the directory containing the video frames
+    :param spatial_transform: spatial transformations to be applied to each frame of the clip
+    :param clip_length: number of consecutive frames in a clip
+    :return: list of all the possible clips after spatial transformation
     """
     # load the clips
     clips = load_clip_frames(video_dir, clip_length)
@@ -54,8 +68,15 @@ def load_clips(video_dir, spatial_transform, clip_length):
     return transformed_clips
 
 
-def get_clip_embeddings(clips, model, batch_size):
-    """Extracts the clip features using the given model."""
+@torch.no_grad()
+def get_clip_embeddings(clips, model, batch_size: int):
+    """Extracts the clip features using the given model.
+
+    :param clips: input clips from which the features will be extracted
+    :param model: backbone model
+    :param batch_size: batch size to extract the embeddings
+    :return: the clip embeddings
+    """
     clip_embedding = []
     cur_loc = 0
     while cur_loc + batch_size < clips.shape[0]:
