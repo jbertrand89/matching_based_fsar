@@ -63,6 +63,15 @@ class TemporalCrossTransformer(nn.Module):
             [nn.Parameter(torch.tensor(comb), requires_grad=False) for comb in frame_combinations])
         self.tuples_len = len(self.tuples)
 
+        self.global_temperature = torch.nn.Parameter(
+            torch.tensor(float(self.args.voting_temperature)),
+            requires_grad=not self.args.voting_global_temperature_fixed)
+        self.temperature_weight = torch.nn.Parameter(
+            float(self.args.voting_global_weights_const_value) * torch.ones(1),
+            requires_grad=not self.args.voting_global_weights_fixed)
+        print(f"self.global_temperature {self.global_temperature}")
+        print(f"self.temperature_weight {self.temperature_weight}")
+
     def forward(self, support_set, support_labels, queries):
         n_queries = queries.shape[0]
         n_support = support_set.shape[0]
@@ -126,6 +135,8 @@ class TemporalCrossTransformer(nn.Module):
             # multiply by -1 to get logits
             distance = distance * -1
             c_idx = c.long()
+            distance *= self.global_temperature
+            distance *= self.temperature_weight
             all_distances_tensor[:, c_idx] = distance
 
         return_dict = {'logits': all_distances_tensor}
@@ -143,7 +154,6 @@ class CNN_TRX(CNN_FSHead):
 
         # fill default args
         self.args.trans_linear_out_dim = 1152
-        self.args.temp_set = [2, 3]
         self.args.trans_dropout = 0.1
 
         self.transformers = nn.ModuleList(

@@ -114,8 +114,9 @@ class Learner:
         parser.add_argument("--split_paths", nargs='+', default=None, help="split paths.")
         parser.add_argument("--split_names", nargs='+', default=None, help="split names.")
         parser.add_argument("--split_seeds", nargs='+', default=None, help="generator seeds")
-        parser.add_argument("--evaluation_mode", choices=["test", "val", "test_best_val"],
-                            default="test", help="run evaluation on test or val")
+        parser.add_argument(
+            "--evaluation_mode", choices=["test", "val", "test_best_val"], default="test",
+            help="run evaluation on test or val")
         parser.add_argument('--get_best_val_checkpoint', default=False, action="store_true")
         parser.add_argument('--seed', type=int, default=0, help="global seed value")
         parser.add_argument(
@@ -123,6 +124,13 @@ class Learner:
             choices=["ssv2-100", "ssv2-large", "kinetics-100", "nle_kinetics-100", "custom",
                      "finegym99", "nle_finegym99", "ssv2_large", "ucf101"])
         parser.add_argument("--gradient_clip", type=int, default=1)
+        parser.add_argument(
+            '--temp_set', nargs='+', type=int, help='cardinalities e.g. 2,3 is pairs and triples',
+            default=[2, 3])
+        parser.add_argument('--voting_temperature', type=float, default=10)
+        parser.add_argument('--voting_global_temperature_fixed', default=False, action="store_true")
+        parser.add_argument('--voting_global_weights_const_value', type=float, default=1)
+        parser.add_argument('--voting_global_weights_fixed', default=False, action="store_true")
         args = parser.parse_args()
 
         if args.get_best_val_checkpoint:
