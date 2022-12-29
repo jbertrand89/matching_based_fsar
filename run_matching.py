@@ -1,16 +1,19 @@
+import time
 import torch
 import numpy as np
 import argparse
 import os
-import pickle
-from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy, verify_checkpoint_dir
-from model import CNN_TRX, CNN_OTAM, CNN_TSN, CNN_PAL
-
+import random
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.tensorboard import SummaryWriter
-import torchvision
+
+import sys
+path = os.path.abspath('../few-shot-action-recognition')  # include the trx repository
+sys.path.append(path)
+from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy, verify_checkpoint_dir
+from src.few_shot_models import CNN_TRX, CNN_OTAM, CNN_TSN, CNN_PAL
 from src.data_loaders.video_feature_reader import VideoFeatureReader
-import random 
+
 
 # torch.autograd.set_detect_anomaly(True)
 
@@ -18,19 +21,33 @@ class Learner:
     def __init__(self):
         self.args = self.parse_command_line()
 
+        if self.args.seed:
+            torch.manual_seed(self.args.seed)
+            torch.cuda.manual_seed_all(self.args.seed)
+            np.random.seed(self.args.seed)
+            random.seed(self.args.seed)
+
+            # from torch.backends import cudnn
+            #
+            # cudnn.deterministic = True  # type: ignore
+            # cudnn.benchmark = False  # type: ignore
+
         self.checkpoint_dir, self.logfile, self.checkpoint_path_validation, self.checkpoint_path_final \
             = get_log_files(self.args.checkpoint_dir, self.args.resume_from_checkpoint, False)
+        self.args.logfile = self.logfile
 
         print_and_log(self.logfile, "Options: %s\n" % self.args)
         print_and_log(self.logfile, "Checkpoint Directory: %s\n" % self.checkpoint_dir)
 
         self.writer = SummaryWriter()
-        
-        self.device = torch.device('cuda' if (torch.cuda.is_available() and self.args.num_gpus > 0) else 'cpu')
+        self.device = torch.device(
+            'cuda' if (torch.cuda.is_available() and self.args.num_gpus > 0) else 'cpu')
+        self.args.device = self.device
         self.model = self.init_model()
 
         self.video_dataset = VideoFeatureReader(self.args)
-        self.video_loader = torch.utils.data.DataLoader(self.video_dataset, batch_size=1, num_workers=self.args.num_workers)
+        self.video_loader = torch.utils.data.DataLoader(
+            self.video_dataset, batch_size=1, num_workers=self.args.num_workers)
         self.val_accuracies = TestAccuracies([self.args.dataset])
 
         self.accuracy_fn = aggregate_accuracy
@@ -63,7 +80,6 @@ class Learner:
             model.distribute_model()
         return model
 
-
     def parse_command_line(self):
         parser = argparse.ArgumentParser()
 
@@ -71,7 +87,7 @@ class Learner:
         parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Learning rate.")
         parser.add_argument("--tasks_per_batch", type=int, default=16, help="Number of tasks between parameter optimizations.")
         parser.add_argument("--checkpoint_dir", "-c", default=None, help="Directory to save checkpoint to.")
-        parser.add_argument("--test_model_name", "-m", default="checkpoint_best_val.pt", help="Path to model to load and test.")
+        parser.add_argument("--test_model_name", "-m", default=None, help="Path to model to load and test.")
         parser.add_argument("--training_iterations", "-i", type=int, default=60000, help="Number of meta-training iterations.")
         parser.add_argument("--resume_from_checkpoint", "-r", dest="resume_from_checkpoint", default=False, action="store_true", help="Restart from latest checkpoint.")
         parser.add_argument("--way", type=int, default=5, help="Way of each task.")
@@ -84,7 +100,7 @@ class Learner:
         parser.add_argument("--print_freq", type=int, default=1000, help="print and log every n iterations.")
         parser.add_argument("--seq_len", type=int, default=8, help="Frames per video.")
         parser.add_argument("--num_workers", type=int, default=8, help="Num dataloader workers.")
-        parser.add_argument("--backbone", choices=["resnet18", "resnet34", "resnet50"], default="resnet50", help="backbone")
+        parser.add_argument("--backbone", choices=["resnet18", "resnet34", "resnet50", "r2plus1d"], default="r2plus1d", help="backbone")
         parser.add_argument("--opt", choices=["adam", "sgd"], default="sgd", help="Optimizer")
         parser.add_argument("--save_freq", type=int, default=5000, help="Number of iterations between checkpoint saves.")
         parser.add_argument("--img_size", type=int, default=224, help="Input image size to the CNN after cropping.")
@@ -98,8 +114,20 @@ class Learner:
         parser.add_argument("--split_paths", nargs='+', default=None, help="split paths.")
         parser.add_argument("--split_names", nargs='+', default=None, help="split names.")
         parser.add_argument("--split_seeds", nargs='+', default=None, help="generator seeds")
+        parser.add_argument("--evaluation_mode", choices=["test", "val", "test_best_val"],
+                            default="test", help="run evaluation on test or val")
+        parser.add_argument('--get_best_val_checkpoint', default=False, action="store_true")
+        parser.add_argument('--seed', type=int, default=0, help="global seed value")
+        parser.add_argument(
+            "--dataset_name", type=str, default="custom", help="Name of the dataset",
+            choices=["ssv2-100", "ssv2-large", "kinetics-100", "nle_kinetics-100", "custom",
+                     "finegym99", "nle_finegym99", "ssv2_large", "ucf101"])
+        parser.add_argument("--gradient_clip", type=int, default=1)
         args = parser.parse_args()
-        
+
+        if args.get_best_val_checkpoint:
+            args.evaluation_mode = "test_best_val"
+
         if args.checkpoint_dir == None:
             print("need to specify a checkpoint dir")
             exit(1)
@@ -108,7 +136,38 @@ class Learner:
             args.trans_linear_in_dim = 2048
         else:
             args.trans_linear_in_dim = 512
-        
+
+        # # Hardcoded juliette
+        # if "r25d34_sports1m.pth" in args.pretrain_path:
+        #     args.r2plus1d_n_classes_pretrain = 400
+        # else:
+        #     args.r2plus1d_n_classes_pretrain = 64
+
+        if args.dataset_name in {"ssv2-large", "ssv2_large"}:
+            args.first_val_iter = 10000
+            args.val_iter_freq = 10000
+            args.training_iterations = 150002
+            args.print_freq = 1000
+            args.save_freq = 10000
+            args.dataset = "/home/bertrjul/data/trx/video_datasets/ssv2_256x256q5"
+        elif args.dataset_name in {"ucf101"}:
+            args.first_val_iter = 1000
+            args.val_iter_freq = 1000
+            args.training_iterations = 10002
+            args.print_freq = 1000
+            args.save_freq = 1000
+            args.dataset = "/home/bertrjul/data/datasets/video_datasets/few_shot_versions/ucf101/split_tsl"
+        elif args.dataset_name.endswith("100"):
+            args.first_val_iter = 1000
+            args.val_iter_freq = 1000
+            args.training_iterations = 20002
+            args.print_freq = 100
+            args.save_freq = 1000
+            args.dataset = "/home/bertrjul/data/trx/video_datasets/kinetics_100_256x256q5"
+
+        i_maximum_iter = (args.training_iterations - args.first_val_iter) // args.val_iter_freq + 1
+        args.val_iters = [args.first_val_iter + i * args.val_iter_freq for i in range(i_maximum_iter)]
+
         return args
 
     def run(self):
@@ -117,13 +176,17 @@ class Learner:
         total_iterations = self.args.training_iterations
 
         iteration = self.start_iteration
+        print(f"start iteration {iteration}")
 
         val_accuraies = [0] * 5
         best_val_accuracy = 0
+        timings = []
 
         for task_dict in self.video_loader:
             if iteration >= total_iterations:
                 break
+
+            t_start_iteration = time.time()
             iteration += 1
             torch.set_grad_enabled(True)
 
@@ -132,25 +195,31 @@ class Learner:
             losses.append(task_loss)
 
             # optimize
-            if ((iteration + 1) % self.args.tasks_per_batch == 0) or (iteration == (total_iterations - 1)):
+            if ((iteration + 1) % self.args.tasks_per_batch == 0) or (
+                    iteration == (total_iterations - 1)):
+                if self.args.gradient_clip > 0:
+                    torch.nn.utils.clip_grad_norm(self.model.parameters(), self.args.gradient_clip)
                 self.optimizer.step()
                 self.optimizer.zero_grad()
+
             self.scheduler.step()
+            t_end_iteration = time.time()
+            timings.append(t_end_iteration - t_start_iteration)
 
             # print training stats
-            if (iteration + 1) % self.args.print_freq == 0:
-                print_and_log(self.logfile,'Task [{}/{}], Train Loss: {:.7f}, Train Accuracy: {:.7f}'
-                              .format(iteration + 1, total_iterations, torch.Tensor(losses).mean().item(),
+            if (iteration + 1) % self.args.print_freq == 0 or iteration == 1:
+                print_and_log(self.logfile,
+                              'Task [{}/{}], Train Loss: {:.7f}, Train Accuracy: {:.7f}'
+                              .format(iteration + 1, total_iterations,
+                                      torch.Tensor(losses).mean().item(),
                                       torch.Tensor(train_accuracies).mean().item()))
                 train_accuracies = []
                 losses = []
-
-            # save checkpoint
-            if ((iteration + 1) % self.args.save_freq == 0) and (iteration + 1) != total_iterations:
-                self.save_checkpoint(iteration + 1)
+                timings = []
 
             # validate
-            if ((iteration + 1) in self.args.val_iters) and (iteration + 1) != total_iterations:
+            if (((iteration + 1) in self.args.val_iters) and (
+                    iteration + 1) != total_iterations) or iteration == 1:
                 accuracy_dict = self.evaluate("val")
                 iter_acc = accuracy_dict[self.args.dataset]["accuracy"]
                 val_accuraies.append(iter_acc)
@@ -165,13 +234,12 @@ class Learner:
                     accuracy_dict = self.evaluate("test")
                     self.val_accuracies.print(self.logfile, accuracy_dict, mode="test")
 
-                # get out if best accuracy was two validations ago
-                if val_accuraies[-1] < val_accuraies[-3]:
-                    break
+                # # get out if best accuracy was two validations ago
+                # if val_accuraies[-1] < val_accuraies[-3]:
+                #     break
 
         # save the final model
         self.save_checkpoint(iteration + 1, "checkpoint_final.pt")
-
 
         # evaluate best validation model if it exists, otherwise evaluate the final model.
         try:
@@ -180,6 +248,7 @@ class Learner:
             self.load_checkpoint("checkpoint_final.pt")
 
         accuracy_dict = self.evaluate("test")
+        print_and_log(self.logfile, f'Best Val Iteration {self.start_iteration}')
         self.val_accuracies.print(self.logfile, accuracy_dict, mode="test")
 
         self.logfile.close()
@@ -189,7 +258,8 @@ class Learner:
         For one task, runs forward, calculates the loss and accuracy and backprops
         """
         task_dict = self.prepare_task(task_dict)
-        model_dict = self.model(task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
+        model_dict = self.model(
+            task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
         target_logits = model_dict['logits']
 
         task_loss = self.model.loss(task_dict, model_dict) / self.args.tasks_per_batch
@@ -209,7 +279,7 @@ class Learner:
             elif mode == "test":
                 n_tasks = self.args.num_test_tasks
 
-            accuracy_dict ={}
+            accuracy_dict = {}
             accuracies = []
             iteration = 0
             item = self.args.dataset
@@ -235,12 +305,14 @@ class Learner:
         
         return accuracy_dict
 
-
     def prepare_task(self, task_dict):
         """
         Remove first batch dimension (as we only ever use a batch size of 1) and move data to device.
         """
         for k in task_dict.keys():
+            if k in {"support_video_names", "target_video_names", "support_temporal_positions",
+                     "target_temporal_positions"}:
+                continue
             task_dict[k] = task_dict[k][0].to(self.device)
         return task_dict
 
@@ -254,15 +326,61 @@ class Learner:
         torch.save(d, os.path.join(self.checkpoint_dir, name))
 
     def load_checkpoint(self, name="checkpoint.pt"):
-        checkpoint = torch.load(os.path.join(self.checkpoint_dir, name))
+        checkpoint_name = os.path.join(self.checkpoint_dir, name)
+        print(f"Loading {checkpoint_name}")
+        checkpoint = torch.load(checkpoint_name)
         self.start_iteration = checkpoint['iteration']
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         self.scheduler.load_state_dict(checkpoint['scheduler'])
 
+    def run_test(self, mode):
+
+        logfile_path = self.logfile.name
+        if mode == "val":
+            n_tasks = self.args.num_val_tasks
+        else:
+            n_tasks = self.args.num_test_tasks
+
+        if self.args.way != 5:
+            suffix = f"_{self.args.way}ways"
+        else:
+            suffix = ""
+
+        logfile_path = logfile_path.replace(".txt", f"_{mode}_{n_tasks}{suffix}.txt")
+        logfile_test = open(logfile_path, "a", buffering=1)
+        print(f"load {self.args.test_model_name}")
+        self.load_checkpoint(self.args.test_model_name)
+
+        self.test_accuracies = TestAccuracies([self.args.dataset])
+        t0 = time.time()
+        accuracy_dict = self.evaluate(mode=mode)
+        t1 = time.time()
+        print(f"evaluation lasted {t1 - t0}s")
+        logfile_test.write(f"seed {self.args.seed}\n")
+        logfile_test.write(f"iteration {self.start_iteration}\n")
+        self.test_accuracies.print(logfile_test, accuracy_dict)
+        item = self.args.dataset
+        self.writer.add_scalar('Accuracy/test', accuracy_dict[item]["accuracy"], self.start_iteration)
+        self.writer.add_scalar('Confidence/test', accuracy_dict[item]["confidence"], self.start_iteration)
+        logfile_test.close()
+
+
 def main():
     learner = Learner()
-    learner.run()
+    if learner.args.get_best_val_checkpoint:
+        print(f"get_best_val_checkpoint")
+        learner.args.test_model_name = os.path.join(
+            learner.args.checkpoint_dir, f"checkpoint_best_val.pt")
+        learner.run_test(learner.args.evaluation_mode)
+    elif learner.args.test_model_name is not None:
+        print(f"run test")
+        learner.run_test(learner.args.evaluation_mode)
+    else:
+        print(f"train")
+        learner.run()
+
 
 if __name__ == "__main__":
+    torch.multiprocessing.set_start_method('spawn')
     main()
