@@ -100,7 +100,9 @@ class Learner:
         parser.add_argument("--print_freq", type=int, default=1000, help="print and log every n iterations.")
         parser.add_argument("--seq_len", type=int, default=8, help="Frames per video.")
         parser.add_argument("--num_workers", type=int, default=8, help="Num dataloader workers.")
-        parser.add_argument("--backbone", choices=["resnet18", "resnet34", "resnet50", "r2plus1d"], default="r2plus1d", help="backbone")
+        parser.add_argument(
+            "--backbone", choices=["resnet18", "resnet34", "resnet50", "r2+1d", "r2+1d_fc"],
+            default="r2+1d", help="backbone")
         parser.add_argument("--opt", choices=["adam", "sgd"], default="sgd", help="Optimizer")
         parser.add_argument("--save_freq", type=int, default=5000, help="Number of iterations between checkpoint saves.")
         parser.add_argument("--img_size", type=int, default=224, help="Input image size to the CNN after cropping.")
@@ -131,6 +133,7 @@ class Learner:
         parser.add_argument('--voting_global_temperature_fixed', default=False, action="store_true")
         parser.add_argument('--voting_global_weights_const_value', type=float, default=1)
         parser.add_argument('--voting_global_weights_fixed', default=False, action="store_true")
+        parser.add_argument('--fc_dimension', default=1152, type=int)
         args = parser.parse_args()
 
         if args.get_best_val_checkpoint:

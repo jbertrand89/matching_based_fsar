@@ -51,13 +51,32 @@ class CNN_OTAM(CNN_FSHead):
 
     def __init__(self, args):
         super(CNN_OTAM, self).__init__(args)
+        if self.args.backbone in {"r2+1d_fc"}:
+            self.fc = torch.nn.Linear(args.trans_linear_in_dim, args.fc_dimension)
+            self.layer_norm = torch.nn.LayerNorm(self.args.fc_dimension)
+
+        self.global_temperature = torch.nn.Parameter(
+            torch.tensor(float(self.args.voting_temperature)),
+            requires_grad=not self.args.voting_global_temperature_fixed)
+
+        self.temperature_weight = torch.nn.Parameter(
+            float(self.args.voting_global_weights_const_value) * torch.ones(1),
+            requires_grad=not self.args.voting_global_weights_fixed)
+        print(f"self.temperature_weight {self.temperature_weight}")
 
     def forward(self, support_images, support_labels, target_images):
-        support_features, target_features = self.get_feats(support_images, target_images)
-        unique_labels = torch.unique(support_labels)
+        # support_features, target_features = self.get_feats(support_images, target_images)
+        support_features, target_features = support_images, target_images
 
+        unique_labels = torch.unique(support_labels)
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
+
+        if self.args.backbone in {"r2+1d_fc"}:
+            support_features = self.fc(support_features)
+            target_features = self.fc(target_features)
+            support_features = self.layer_norm(support_features)
+            target_features = self.layer_norm(target_features)
 
         support_features = rearrange(support_features, 'b s d -> (b s) d')
         target_features = rearrange(target_features, 'b s d -> (b s) d')
@@ -76,6 +95,8 @@ class CNN_OTAM(CNN_FSHead):
                        dim=1) for c in unique_labels]
         class_dists = torch.stack(class_dists)
         class_dists = rearrange(class_dists, 'c q -> q c')
+        class_dists *= self.temperature_weight  # learnt weight
+        class_dists *= self.global_temperature  # fixed temperature
         return_dict = {'logits': - class_dists}
         return return_dict
 
