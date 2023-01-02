@@ -133,7 +133,7 @@ class Learner:
         parser.add_argument('--fc_dimension', default=1152, type=int)
         parser.add_argument(
             "--matching_function", default="otam",
-            choices=["mean", "diag", "otam", "fc", "visil", "max", "chamfer", "chamfer-transposed",
+            choices=["mean", "diag", "otam", "fc", "visil", "max", "chamfer-query", "chamfer++",
                      "chamfer-support"],
             help="matching function")
 

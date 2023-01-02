@@ -93,12 +93,32 @@ class CNN_OTAM(CNN_FSHead):
         # (way * query_per_class, way * shot, query_seq_len, support_seq_len)
         return frame_to_frame_similarity
 
+    def get_video_to_video_similarity(self, frame_to_frame_similarity):
+        if self.args.matching_function == "chamfer-support":
+            frame_to_frame_similarity_transposed = torch.transpose(
+                frame_to_frame_similarity, dim0=-2, dim1=-1)
+            video_to_video_similarity = self.matching_function.forward(
+                frame_to_frame_similarity_transposed)
+        elif self.args.matching_function == "chamfer++":
+            video_to_video_similarity = self.matching_function.forward(frame_to_frame_similarity)
+            frame_to_frame_similarity_transposed = torch.transpose(
+                frame_to_frame_similarity, dim0=-2, dim1=-1)
+            video_to_video_similarity_transposed = self.matching_function.forward(
+                frame_to_frame_similarity_transposed)
+            video_to_video_similarity = 0.5 * (
+                    video_to_video_similarity + video_to_video_similarity_transposed)
+        else:
+            video_to_video_similarity = self.matching_function.forward(frame_to_frame_similarity)
+
+        return video_to_video_similarity
+
+
     def forward(self, support_images, support_labels, target_images):
 
         frame_to_frame_similarity = self.get_similarity_matrix(support_images, target_images)
-        video_to_video_similarity = self.matching_function.forward(frame_to_frame_similarity)
+        video_to_video_similarity = self.get_video_to_video_similarity(frame_to_frame_similarity)
         video_to_class_similarity = self.aggregate_multi_shot_faster(video_to_video_similarity)
-        video_to_class_similarity *= self.temperature_weight  # learnt weight
+        video_to_class_similarity *= self.temperature_weight  # learnt temperature weight
         video_to_class_similarity *= self.global_temperature  # fixed temperature
 
         return_dict = {'logits': video_to_class_similarity}

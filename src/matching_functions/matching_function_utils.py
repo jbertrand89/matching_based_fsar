@@ -14,7 +14,7 @@ def get_matching_function(args):
         return MaxMatching(args)
     elif args.matching_function == "otam":
         return OTAMMatching(args)
-    elif args.matching_function in {"chamfer", "chamfer-transposed", "chamfer-support"}:
+    elif args.matching_function.startswith("chamfer"):
         return ChamferMatching(args)
     else:
         raise Exception("Not implemented yet")
