@@ -4,7 +4,11 @@ from einops import rearrange
 
 
 class VisilFCN(nn.Module):
-
+    """
+    Module for the fully connected network defined ViSiL: https://arxiv.org/abs/1908.07410 (Table 1)
+    It is composed of 4 convolutional layers with 2 max pooling, Relu mid level activations and
+    hardtanh final activation
+    """
     def __init__(self, args):
         super(VisilFCN, self).__init__()
         self.args = args
@@ -18,9 +22,11 @@ class VisilFCN(nn.Module):
         self.hardtanh = nn.Hardtanh()
 
     def forward(self, similarity):
-        """ Vote by averaging the diagonal values.
-        :input: the similarity matrix as a tensor of size
-        (way * query_per_class, way * shot, query_seq_len, query_seq_len)
+        """ Forward pass
+        :param similarity: the similarity matrix, it is a tensor of size
+          (query count, support count, query clip count, support clip count)
+        :return: the filtered similarity matrix, it is a tensor of size
+          (query count, support count, query clip count // 4, support clip count // 4)
         """
         x = rearrange(similarity, 'q s lq ls -> (q s) 1 lq ls')
         x = self.conv1(x)

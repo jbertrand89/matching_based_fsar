@@ -1,12 +1,16 @@
 from . import DiagonalMatching, MeanMatching, OTAMMatching, MaxMatching
 from . import LinearMatching, ChamferMatching
-#,, ,
 
 
 def get_matching_function(args):
+    """Select the matching function based on the input arguments
+
+    :param args: the input arguments
+    :return: the matching function module
+    """
     if args.matching_function == "diag":
         return DiagonalMatching(args)
-    elif args.matching_function == "fc":
+    elif args.matching_function == "linear":
         return LinearMatching(args)
     elif args.matching_function == "mean":
         return MeanMatching(args)

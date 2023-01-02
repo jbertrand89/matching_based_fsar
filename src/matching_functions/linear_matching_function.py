@@ -1,24 +1,25 @@
 from einops import rearrange
 import torch.nn as nn
 
-from src.layers.fc_layer import FCLayer
-
 
 class LinearMatching(nn.Module):
-    """Flattens the similarity matrix and apply an fc layer on top of it.
-
-    TODO Used parameters
+    """ Module for the linear matching function. It flattens the frame-to-frame similarity matrix
+    and apply an linear layer on top of it.
     """
     def __init__(self, args):
         super(LinearMatching, self).__init__()
         self.args = args
-        self.fc = FCLayer(
-            64, # todo don't hardcode it
-            with_batch_norm=False, #self.args.use_batch_normalization,
-            with_sigmoid=False) #self.args.use_sigmoid)
+        self.linear = nn.Linear(self.args.seq_len * self.args.seq_len, 1, bias=False)
 
     def forward(self, similarity):
+        """ Forward pass
+
+        :param similarity: the frame to frame similarity matrix, it is a tensor of size
+          [query count, support count, query clip count, support clip count]
+        :return: the video to video similarity score, it is a tensor of size
+          [query count, support count]
+        """
         similarity_flattened = rearrange(similarity, "q s lq ls -> (q s) (lq ls)")
-        x = self.fc(similarity_flattened)
+        x = self.linear(similarity_flattened)
         x = rearrange(x, "(q s) 1 -> q s", q=similarity.shape[0], s=similarity.shape[1])
         return x

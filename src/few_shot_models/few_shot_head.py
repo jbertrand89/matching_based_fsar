@@ -20,9 +20,9 @@ class CNN_FSHead(nn.Module):
         else:
             self.backbone = None
 
-        if self.args.clip_tuple_cardinality > 1:
+        if self.args.clip_tuple_length > 1:
             frame_idxs = list(range(self.args.seq_len))
-            frame_combinations = combinations(frame_idxs, self.args.clip_tuple_cardinality)
+            frame_combinations = combinations(frame_idxs, self.args.clip_tuple_length)
             tuples = [nn.Parameter(torch.tensor(comb), requires_grad=False) for comb in
                       frame_combinations]
             self.clip_tuples = nn.ParameterList(tuples)

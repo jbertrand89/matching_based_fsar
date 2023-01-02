@@ -110,36 +110,61 @@ class Learner:
         parser.add_argument("--pretrained_backbone", "-pt", type=str, default=None, help="pretrained backbone path, used by PAL")
         parser.add_argument("--val_on_test", default=False, action="store_true", help="Danger: Validate on the test set, not the validation set. Use for debugging or checking overfitting on test set. Not good practice to use when developing, hyperparameter tuning or training models.")
 
-        # Parameters adding for the paper Rethinking matching-based few-shot action recognition
-        parser.add_argument("--split_paths", nargs='+', default=None, help="split paths.")
-        parser.add_argument("--split_names", nargs='+', default=None, help="split names.")
-        parser.add_argument("--split_seeds", nargs='+', default=None, help="generator seeds")
-        parser.add_argument("--evaluation_mode", choices=["test", "val"], default="test",
-            help="run evaluation on test or val")
-        parser.add_argument('--get_best_val_checkpoint', default=False, action="store_true")
+        # PARAMETERS ADDED for the paper Rethinking matching-based few-shot action recognition
         parser.add_argument('--seed', type=int, default=0, help="global seed value")
-        parser.add_argument(
-            "--dataset_name", type=str, default="custom", help="Name of the dataset",
-            choices=["ssv2-100", "ssv2-large", "kinetics-100", "nle_kinetics-100", "custom",
-                     "finegym99", "nle_finegym99", "ssv2_large", "ucf101"])
-        parser.add_argument("--gradient_clip", type=int, default=1)
         parser.add_argument(
             '--temp_set', nargs='+', type=int, help='cardinalities e.g. 2,3 is pairs and triples',
             default=[2, 3])
-        parser.add_argument('--voting_temperature', type=float, default=10)
-        parser.add_argument('--voting_global_temperature_fixed', default=False, action="store_true")
-        parser.add_argument('--voting_global_weights_const_value', type=float, default=1)
-        parser.add_argument('--voting_global_weights_fixed', default=False, action="store_true")
-        parser.add_argument('--fc_dimension', default=1152, type=int)
+        parser.add_argument("--gradient_clip", type=int, default=1)
+
+        # dataloader parameters
+        parser.add_argument(
+            "--split_paths", nargs='+', default=None,
+            help="split paths, used in the feature loader.")
+        parser.add_argument(
+            "--split_names", nargs='+', default=None,
+            help="split names, used in the feature loader.")
+        parser.add_argument(
+            "--split_seeds", nargs='+', default=None, help="generator seeds")
+
+        # evaluation parameters
+        parser.add_argument("--evaluation_mode", choices=["test", "val"], default="test",
+            help="run evaluation on test or val")
+        parser.add_argument(
+            '--get_best_val_checkpoint', default=False, action="store_true",
+            help="run the evaluation on the best model evaluated on the validation dataset")
+
+        # matching temperatures
+        parser.add_argument(
+            '--matching_global_temperature', type=float, default=10,
+            help="global temperature value")
+        parser.add_argument(
+            '--matching_global_temperature_fixed', default=False, action="store_true",
+            help="True if the global temperature value is constant")
+        parser.add_argument(
+            '--matching_temperature_weight', type=float, default=1,
+            help="True if the temperature weight value is constant")
+        parser.add_argument(
+            '--matching_temperature_weight_fixed', default=False, action="store_true",
+            help="True if the temperature weight value is constant")
+
+        # matching functions and hyper parameters
+        parser.add_argument(
+            '--feature_projection_dimension', default=1152, type=int,
+            help="Dimension of the projection head")
         parser.add_argument(
             "--matching_function", default="otam",
-            choices=["mean", "diag", "otam", "fc", "visil", "max", "chamfer-query", "chamfer++",
-                     "chamfer-support"],
+            choices=["mean", "diag", "otam", "linear", "max", "chamfer-query", "chamfer-support",
+                     "chamfer++"],
             help="matching function")
         parser.add_argument(
-            "--video_to_class_matching", default="separate", choices=["separate", "joint"], type=str)
-        parser.add_argument("--clip_tuple_cardinality", default=1, type=int)
-        parser.add_argument("--visil", default=False, action="store_true")
+            "--video_to_class_matching", default="separate", choices=["separate", "joint"],
+            type=str, help="whether to use separate matching or joint matching")
+        parser.add_argument(
+            "--clip_tuple_length", default=1, type=int, help="length of the clip tuples")
+        parser.add_argument(
+            "--visil", default=False, action="store_true",
+            help="whether to apply the visil fully connected layers before the matching function")
 
         args = parser.parse_args()
 
@@ -148,37 +173,10 @@ class Learner:
             exit(1)
 
         if args.backbone == "resnet50":
-            args.trans_linear_in_dim = 2048  #todo rename to embedding_dimension
+            # equivalent as trans_linear_in_dim in the TRX repository
+            args.backbone_feature_dimension = 2048
         else:
-            args.trans_linear_in_dim = 512
-
-        # # Hardcoded juliette
-        # if "r25d34_sports1m.pth" in args.pretrain_path:
-        #     args.r2plus1d_n_classes_pretrain = 400
-        # else:
-        #     args.r2plus1d_n_classes_pretrain = 64
-
-        if args.dataset_name in {"ssv2-large", "ssv2_large"}:
-            args.first_val_iter = 10000
-            args.val_iter_freq = 10000
-            args.training_iterations = 150002
-            args.print_freq = 1000
-            args.save_freq = 10000
-            args.dataset = "/home/bertrjul/data/trx/video_datasets/ssv2_256x256q5"
-        elif args.dataset_name in {"ucf101"}:
-            args.first_val_iter = 1000
-            args.val_iter_freq = 1000
-            args.training_iterations = 10002
-            args.print_freq = 1000
-            args.save_freq = 1000
-            args.dataset = "/home/bertrjul/data/datasets/video_datasets/few_shot_versions/ucf101/split_tsl"
-        elif args.dataset_name.endswith("100"):
-            args.first_val_iter = 1000
-            args.val_iter_freq = 1000
-            args.training_iterations = 20002
-            args.print_freq = 100
-            args.save_freq = 1000
-            args.dataset = "/home/bertrjul/data/trx/video_datasets/kinetics_100_256x256q5"
+            args.backbone_feature_dimension = 512
 
         i_maximum_iter = (args.training_iterations - args.first_val_iter) // args.val_iter_freq + 1
         args.val_iters = [args.first_val_iter + i * args.val_iter_freq for i in range(i_maximum_iter)]

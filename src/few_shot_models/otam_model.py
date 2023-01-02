@@ -12,13 +12,13 @@ class CNN_OTAM(CNN_FSHead):
     """
     OTAM with a CNN backbone.
     """
-
     def __init__(self, args):
         super(CNN_OTAM, self).__init__(args)
         if self.args.backbone in {"r2+1d_fc"}:
             self.fc = torch.nn.Linear(
-                args.trans_linear_in_dim * self.args.clip_tuple_cardinality, args.fc_dimension)
-            self.layer_norm = torch.nn.LayerNorm(self.args.fc_dimension)
+                args.backbone_feature_dimension * self.args.clip_tuple_length,
+                args.feature_projection_dimension)
+            self.layer_norm = torch.nn.LayerNorm(self.args.feature_projection_dimension)
 
         self.matching_function = get_matching_function(args=self.args)
 
@@ -26,12 +26,12 @@ class CNN_OTAM(CNN_FSHead):
             self.visil_fcn = VisilFCN(self.args)
 
         self.global_temperature = torch.nn.Parameter(
-            torch.tensor(float(self.args.voting_temperature)),
-            requires_grad=not self.args.voting_global_temperature_fixed)
+            torch.tensor(float(self.args.matching_global_temperature)),
+            requires_grad=not self.args.matching_global_temperature_fixed)
 
         self.temperature_weight = torch.nn.Parameter(
-            float(self.args.voting_global_weights_const_value) * torch.ones(1),
-            requires_grad=not self.args.voting_global_weights_fixed)
+            float(self.args.matching_temperature_weight) * torch.ones(1),
+            requires_grad=not self.args.matching_temperature_weight_fixed)
         print(f"self.temperature_weight {self.temperature_weight}")
 
     def get_frame_to_frame_similarity_matrix(self, support_images, target_images):
@@ -41,7 +41,7 @@ class CNN_OTAM(CNN_FSHead):
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
 
-        if self.args.clip_tuple_cardinality > 1:
+        if self.args.clip_tuple_length > 1:
             # create clip tuples for the support
             support = [torch.index_select(support_features, -2, p).reshape(n_support, -1)
                        for p in self.clip_tuples]
@@ -74,12 +74,28 @@ class CNN_OTAM(CNN_FSHead):
         return frame_to_frame_similarity
 
     def transpose_frame_to_frame_similarity(self, frame_to_frame_similarity):
+        """ Transposes the frame to frame similarity. The transposed matrix is used for the
+        chamfer-support and chamfer++ matching functions. Otherwise, it is not computed.
+
+        :param frame_to_frame_similarity: input similarity matrix of shape
+          (way * query_per_class, way * shot, query clip count (seq_len), support clip count)
+        :return: the transposed similarity matrix of shape
+          (way * shot, way * query_per_class, query clip count, support clip count)
+        """
         if self.args.matching_function in {"chamfer-support", "chamfer++"}:
             return torch.transpose(frame_to_frame_similarity, dim0=-2, dim1=-1)
         else:
             return None
 
     def filter_similarity(self, frame_to_frame_similarity, frame_to_frame_similarity_transposed):
+        """ Apply the fully connected network defined in ViSiL https://arxiv.org/abs/1908.07410
+
+        :param frame_to_frame_similarity: input similarity matrix of shape
+         (way * query_per_class, way * shot, query clip count (seq_len), support clip count)
+        :param frame_to_frame_similarity_transposed: the transposed similarity matrix of shape
+         (way * shot, way * query_per_class, query clip count, support clip count)
+         :return:
+        """
         if self.args.visil:
             frame_to_frame_similarity = self.visil_fcn.forward(frame_to_frame_similarity)
 
@@ -143,5 +159,8 @@ class CNN_OTAM(CNN_FSHead):
         return return_dict
 
     def loss(self, task_dict, model_dict):
+        """
+
+        """
         return F.cross_entropy(model_dict["logits"], task_dict["target_labels"].long())
 

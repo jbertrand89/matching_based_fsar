@@ -43,12 +43,12 @@ class TemporalCrossTransformer(nn.Module):
         self.temporal_set_size = temporal_set_size
 
         max_len = int(self.args.seq_len * 1.5)
-        self.pe = PositionalEncoding(self.args.trans_linear_in_dim, self.args.trans_dropout,
+        self.pe = PositionalEncoding(self.args.backbone_feature_dimension, self.args.trans_dropout,
                                      max_len=max_len)
 
-        self.k_linear = nn.Linear(self.args.trans_linear_in_dim * temporal_set_size,
+        self.k_linear = nn.Linear(self.args.backbone_feature_dimension * temporal_set_size,
                                   self.args.trans_linear_out_dim)  # .cuda()
-        self.v_linear = nn.Linear(self.args.trans_linear_in_dim * temporal_set_size,
+        self.v_linear = nn.Linear(self.args.backbone_feature_dimension * temporal_set_size,
                                   self.args.trans_linear_out_dim)  # .cuda()
 
         self.norm_k = nn.LayerNorm(self.args.trans_linear_out_dim)
