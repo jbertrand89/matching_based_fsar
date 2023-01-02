@@ -74,6 +74,7 @@ class CNN_OTAM(CNN_FSHead):
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
 
+        # projection head
         if self.args.backbone in {"r2+1d_fc"}:
             support_features = self.fc(support_features)
             target_features = self.fc(target_features)
@@ -81,16 +82,24 @@ class CNN_OTAM(CNN_FSHead):
             target_features = self.layer_norm(target_features)
 
         support_features = rearrange(support_features, 'b s d -> (b s) d')
-        # (way * shot * seq_len, 2048)
+        # (way * shot * seq_len, embedding_dimension)
         target_features = rearrange(target_features, 'b s d -> (b s) d')
         # (way * query_per_class * seq_len, embedding_dimension)
 
+        # cosine similarity
         frame_to_frame_similarity = cos_sim(target_features, support_features)
         # (way * query_per_class * seq_len, way * shot * seq_len)
 
         frame_to_frame_similarity = rearrange(
             frame_to_frame_similarity, '(qb ql) (sb sl) -> qb sb ql sl', qb=n_queries, sb=n_support)
         # (way * query_per_class, way * shot, query_seq_len, support_seq_len)
+
+        # joint matching
+        if self.args.video_to_class_matching == "joint":  # and self.visil is None:
+            frame_to_frame_similarity = rearrange(
+                frame_to_frame_similarity, "q (w s) lq ls -> q w lq (s ls)", s=self.args.shot)
+            # (way * query_per_class, way, query_seq_len, support_seq_len * shot)
+
         return frame_to_frame_similarity
 
     def get_video_to_video_similarity(self, frame_to_frame_similarity):
@@ -112,12 +121,11 @@ class CNN_OTAM(CNN_FSHead):
 
         return video_to_video_similarity
 
-
     def forward(self, support_images, support_labels, target_images):
 
         frame_to_frame_similarity = self.get_similarity_matrix(support_images, target_images)
         video_to_video_similarity = self.get_video_to_video_similarity(frame_to_frame_similarity)
-        video_to_class_similarity = self.aggregate_multi_shot_faster(video_to_video_similarity)
+        video_to_class_similarity = self.get_video_to_class_similarity(video_to_video_similarity)
         video_to_class_similarity *= self.temperature_weight  # learnt temperature weight
         video_to_class_similarity *= self.global_temperature  # fixed temperature
 

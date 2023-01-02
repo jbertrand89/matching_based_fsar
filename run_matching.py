@@ -136,6 +136,8 @@ class Learner:
             choices=["mean", "diag", "otam", "fc", "visil", "max", "chamfer-query", "chamfer++",
                      "chamfer-support"],
             help="matching function")
+        parser.add_argument(
+            "--video_to_class_matching", default="joint", choices=["separate", "joint"], type=str)
 
         args = parser.parse_args()
 

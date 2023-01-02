@@ -48,11 +48,9 @@ class CNN_FSHead(nn.Module):
 
         return support_features, target_features
 
-    def aggregate_multi_shot_faster(self, results_multi_shot):
+    def get_video_to_class_similarity(self, results_multi_shot):
         """
         Aggregates per class, when k shot is higher than 1. Mean aggregation by default.
-        Since the data is originally shuffled, it first needs to be rearranged based on the support_labels
-        BE CAREFUL: it will remove the target from the support if self.args.query_in_support is True
         """
         results_multi_shot_ordered_per_class = rearrange(
             results_multi_shot, "a (b c) -> a b c", b=self.args.way)
