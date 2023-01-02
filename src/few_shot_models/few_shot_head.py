@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
+from einops import rearrange
 
 
 class CNN_FSHead(nn.Module):
@@ -46,6 +47,19 @@ class CNN_FSHead(nn.Module):
         target_features = target_features.reshape(-1, self.args.seq_len, dim)
 
         return support_features, target_features
+
+    def aggregate_multi_shot_faster(self, results_multi_shot):
+        """
+        Aggregates per class, when k shot is higher than 1. Mean aggregation by default.
+        Since the data is originally shuffled, it first needs to be rearranged based on the support_labels
+        BE CAREFUL: it will remove the target from the support if self.args.query_in_support is True
+        """
+        results_multi_shot_ordered_per_class = rearrange(
+            results_multi_shot, "a (b c) -> a b c", b=self.args.way)
+        # (way * query_per_class, way, shot)
+
+        return torch.mean(results_multi_shot_ordered_per_class, dim=2)
+        # (way * query_per_class, support way)
 
     def forward(self, support_images, support_labels, target_images):
         """

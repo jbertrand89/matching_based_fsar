@@ -60,8 +60,6 @@ class Learner:
         self.scheduler = MultiStepLR(self.optimizer, milestones=self.args.sch, gamma=0.1)
         
         self.start_iteration = 0
-        if self.args.resume_from_checkpoint:
-            self.load_checkpoint()
         self.optimizer.zero_grad()
 
     def init_model(self):
@@ -116,8 +114,7 @@ class Learner:
         parser.add_argument("--split_paths", nargs='+', default=None, help="split paths.")
         parser.add_argument("--split_names", nargs='+', default=None, help="split names.")
         parser.add_argument("--split_seeds", nargs='+', default=None, help="generator seeds")
-        parser.add_argument(
-            "--evaluation_mode", choices=["test", "val", "test_best_val"], default="test",
+        parser.add_argument("--evaluation_mode", choices=["test", "val"], default="test",
             help="run evaluation on test or val")
         parser.add_argument('--get_best_val_checkpoint', default=False, action="store_true")
         parser.add_argument('--seed', type=int, default=0, help="global seed value")
@@ -134,17 +131,20 @@ class Learner:
         parser.add_argument('--voting_global_weights_const_value', type=float, default=1)
         parser.add_argument('--voting_global_weights_fixed', default=False, action="store_true")
         parser.add_argument('--fc_dimension', default=1152, type=int)
-        args = parser.parse_args()
+        parser.add_argument(
+            "--matching_function", default="otam",
+            choices=["mean", "diag", "otam", "fc", "visil", "max", "chamfer", "chamfer-transposed",
+                     "chamfer-support"],
+            help="matching function")
 
-        if args.get_best_val_checkpoint:
-            args.evaluation_mode = "test_best_val"
+        args = parser.parse_args()
 
         if args.checkpoint_dir == None:
             print("need to specify a checkpoint dir")
             exit(1)
 
         if args.backbone == "resnet50":
-            args.trans_linear_in_dim = 2048
+            args.trans_linear_in_dim = 2048  #todo rename to embedding_dimension
         else:
             args.trans_linear_in_dim = 512
 

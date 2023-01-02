@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 from utils import extract_class_indices, cos_sim
 from einops import rearrange
+from src.matching_functions.matching_function_utils import get_matching_function
 
 from .few_shot_head import CNN_FSHead
 
@@ -55,6 +56,8 @@ class CNN_OTAM(CNN_FSHead):
             self.fc = torch.nn.Linear(args.trans_linear_in_dim, args.fc_dimension)
             self.layer_norm = torch.nn.LayerNorm(self.args.fc_dimension)
 
+        self.matching_function = get_matching_function(args=self.args)
+
         self.global_temperature = torch.nn.Parameter(
             torch.tensor(float(self.args.voting_temperature)),
             requires_grad=not self.args.voting_global_temperature_fixed)
@@ -64,11 +67,10 @@ class CNN_OTAM(CNN_FSHead):
             requires_grad=not self.args.voting_global_weights_fixed)
         print(f"self.temperature_weight {self.temperature_weight}")
 
-    def forward(self, support_images, support_labels, target_images):
+    def get_similarity_matrix(self, support_images, target_images):
         # support_features, target_features = self.get_feats(support_images, target_images)
         support_features, target_features = support_images, target_images
 
-        unique_labels = torch.unique(support_labels)
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
 
@@ -79,25 +81,28 @@ class CNN_OTAM(CNN_FSHead):
             target_features = self.layer_norm(target_features)
 
         support_features = rearrange(support_features, 'b s d -> (b s) d')
+        # (way * shot * seq_len, 2048)
         target_features = rearrange(target_features, 'b s d -> (b s) d')
+        # (way * query_per_class * seq_len, embedding_dimension)
 
-        frame_sim = cos_sim(target_features, support_features)
-        frame_dists = 1 - frame_sim
+        frame_to_frame_similarity = cos_sim(target_features, support_features)
+        # (way * query_per_class * seq_len, way * shot * seq_len)
 
-        dists = rearrange(frame_dists, '(tb ts) (sb ss) -> tb sb ts ss', tb=n_queries, sb=n_support)
+        frame_to_frame_similarity = rearrange(
+            frame_to_frame_similarity, '(qb ql) (sb sl) -> qb sb ql sl', qb=n_queries, sb=n_support)
+        # (way * query_per_class, way * shot, query_seq_len, support_seq_len)
+        return frame_to_frame_similarity
 
-        # calculate query -> support and support -> query
-        cum_dists = OTAM_cum_dist(dists) + OTAM_cum_dist(
-            rearrange(dists, 'tb sb ts ss -> tb sb ss ts'))
+    def forward(self, support_images, support_labels, target_images):
 
-        class_dists = [
-            torch.mean(torch.index_select(cum_dists, 1, extract_class_indices(support_labels, c)),
-                       dim=1) for c in unique_labels]
-        class_dists = torch.stack(class_dists)
-        class_dists = rearrange(class_dists, 'c q -> q c')
-        class_dists *= self.temperature_weight  # learnt weight
-        class_dists *= self.global_temperature  # fixed temperature
-        return_dict = {'logits': - class_dists}
+        frame_to_frame_similarity = self.get_similarity_matrix(support_images, target_images)
+        video_to_video_similarity = self.matching_function.forward(frame_to_frame_similarity)
+        video_to_class_similarity = self.aggregate_multi_shot_faster(video_to_video_similarity)
+        video_to_class_similarity *= self.temperature_weight  # learnt weight
+        video_to_class_similarity *= self.global_temperature  # fixed temperature
+
+        return_dict = {'logits': video_to_class_similarity}
+
         return return_dict
 
     def loss(self, task_dict, model_dict):
