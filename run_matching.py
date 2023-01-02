@@ -137,7 +137,8 @@ class Learner:
                      "chamfer-support"],
             help="matching function")
         parser.add_argument(
-            "--video_to_class_matching", default="joint", choices=["separate", "joint"], type=str)
+            "--video_to_class_matching", default="separate", choices=["separate", "joint"], type=str)
+        parser.add_argument("--clip_tuple_cardinality", default=1, type=int)
 
         args = parser.parse_args()
 

@@ -74,6 +74,19 @@ class CNN_OTAM(CNN_FSHead):
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
 
+        if self.args.clip_tuple_cardinality > 1:
+            # create clip tuples for the support
+            n_support = support_features.shape[0]
+            support = [torch.index_select(support_features, -2, p).reshape(n_support, -1)
+                       for p in self.clip_tuples]
+            support_features = torch.stack(support, dim=-2)
+
+            # create clip tuples for the target/query
+            n_target = target_features.shape[0]
+            target = [torch.index_select(target_features, -2, p).reshape(n_target, -1)
+                      for p in self.clip_tuples]
+            target_features = torch.stack(target, dim=-2)
+
         # projection head
         if self.args.backbone in {"r2+1d_fc"}:
             support_features = self.fc(support_features)

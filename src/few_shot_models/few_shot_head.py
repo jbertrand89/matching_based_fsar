@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from einops import rearrange
+from itertools import combinations
 
 
 class CNN_FSHead(nn.Module):
@@ -18,6 +19,15 @@ class CNN_FSHead(nn.Module):
             self.get_backbone()
         else:
             self.backbone = None
+
+        if self.args.clip_tuple_cardinality > 1:
+            frame_idxs = list(range(self.args.seq_len))
+            frame_combinations = combinations(frame_idxs, self.args.clip_tuple_cardinality)
+            tuples = [nn.Parameter(torch.tensor(comb), requires_grad=False) for comb in
+                      frame_combinations]
+            self.clip_tuples = nn.ParameterList(tuples)
+        else:
+            self.clip_tuples = None
 
     def get_backbone(self):
         if self.args.backbone == "resnet18":
