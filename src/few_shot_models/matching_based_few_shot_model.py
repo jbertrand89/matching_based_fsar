@@ -1,10 +1,10 @@
 import torch
-from utils import extract_class_indices, cos_sim
 from einops import rearrange
 from src.matching_functions.matching_function_utils import get_matching_function
 from src.matching_functions.visil_fcn import VisilFCN
-
 from .few_shot_head import FewShotHead
+# code from the few-shot-action-recognition repo
+from utils import extract_class_indices, cos_sim
 
 
 class MatchingBasedFewShotModel(FewShotHead):
@@ -175,14 +175,20 @@ class MatchingBasedFewShotModel(FewShotHead):
         return video_to_video_similarity
 
     def forward(self, support_clips, support_labels, target_clips):
-        """
+        """ Matching-based process composed of the following steps:
+        - computes the clip-to-clip similarity matrix (clip-tuple to clip-tuple similarity matrix)
+        - concatenates the support examples per class if video_to_class_matching=joint
+        - transposes the clip-to-clip similarity matrix if needed
+        - computes a video-to-video similarity score
+        - computes a video-to-class similarity score if needed
+        - multiply by a temperature factor (learnable)
 
         :param support_clips: the support clips if self.args.load_features is false / the support
           backbone embeddings if self.args.load_features is true
         :param support_labels: the labels of the support clips
         :param target_clips: the query clips if self.args.load_features is false / the query
           backbone embeddings if self.args.load_features is true
-        :return: the clip-to-clip similarity matrix
+        :return: a dictionary with the video_to_class_similarity as a logit
         """
         clip_to_clip_similarity = self.get_clip_to_clip_similarity_matrix(
             support_clips, target_clips)

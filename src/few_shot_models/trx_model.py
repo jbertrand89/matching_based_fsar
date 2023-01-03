@@ -1,41 +1,72 @@
 import math
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 from itertools import combinations
 
-from utils import extract_class_indices, cos_sim
 from .few_shot_head import FewShotHead
+# code from the few-shot-action-recognition repo
+from utils import extract_class_indices, cos_sim
+from model import PositionalEncoding
 
 
-class PositionalEncoding(nn.Module):
+
+class TRX_few_shot_model(FewShotHead):
     """
-    Positional encoding from the Transformer paper.
+    TRX model for few-shot action recognition.
+    This class was first introduced in https://github.com/tobyperrett/few-shot-action-recognition
+    and adapted for r2+1d precomputed features. The code is identical except for the parameter
+    self.args.temp_set which is now introduced in run_matching.
     """
+    def __init__(self, args):
+        super(TRX_few_shot_model, self).__init__(args)
 
-    def __init__(self, d_model, dropout, max_len=5000, pe_scale_factor=0.1):
-        super(PositionalEncoding, self).__init__()
-        self.dropout = nn.Dropout(p=dropout)
-        self.pe_scale_factor = pe_scale_factor
-        # Compute the positional encodings once in log space.
-        pe = torch.zeros(max_len, d_model)
-        position = torch.arange(0, max_len).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2) * -(math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term) * self.pe_scale_factor
-        pe[:, 1::2] = torch.cos(position * div_term) * self.pe_scale_factor
-        pe = pe.unsqueeze(0)
-        self.register_buffer('pe', pe)
+        # fill default args
+        self.args.trans_linear_out_dim = 1152
+        self.args.trans_dropout = 0.1
 
-    def forward(self, x):
-        x = x + Variable(self.pe[:, :x.size(1)], requires_grad=False)
-        return self.dropout(x)
+        self.transformers = nn.ModuleList(
+            [TemporalCrossTransformer(args, s) for s in args.temp_set])
+
+    def forward(self, support_clips, support_labels, target_clips):
+        """ TRX process:
+        - it computes/loads the support and target/query features
+        - it created Temporal Cross Transformers of multiple cardinalities.
+
+        :param support_clips: the support clips if self.args.load_features is false / the support
+          backbone embeddings if self.args.load_features is true
+        :param support_labels: the labels of the support clips
+        :param target_clips: the query clips if self.args.load_features is false / the query
+          backbone embeddings if self.args.load_features is true
+        :return: a dictionary with the video_to_class_similarity as a logit
+        """
+        support_features, target_features = self.get_feats(support_clips, target_clips)
+
+        all_logits = [t(support_features, support_labels, target_features)['logits'] for t in
+                      self.transformers]
+        all_logits = torch.stack(all_logits, dim=-1)
+        sample_logits = all_logits
+        sample_logits = torch.mean(sample_logits, dim=[-1])
+
+        return_dict = {'logits': sample_logits}
+        return return_dict
+
+    def distribute_model(self):
+        """
+        Distributes the CNNs over multiple GPUs. Leaves TRX on GPU 0.
+        :return: Nothing
+        """
+        FewShotHead.distribute_model()
+        self.transformers.cuda(0)
 
 
 class TemporalCrossTransformer(nn.Module):
     """
     A temporal cross transformer for a single tuple cardinality. E.g. pairs or triples.
-    """
 
+    This class was first introduced in https://github.com/tobyperrett/few-shot-action-recognition.
+    The code is identical except for the temperature parameters self.global_temperature and
+    self.temperature_weight.
+    """
     def __init__(self, args, temporal_set_size=3):
         super(TemporalCrossTransformer, self).__init__()
 
@@ -64,15 +95,25 @@ class TemporalCrossTransformer(nn.Module):
         self.tuples_len = len(self.tuples)
 
         self.global_temperature = torch.nn.Parameter(
-            torch.tensor(float(self.args.voting_temperature)),
-            requires_grad=not self.args.voting_global_temperature_fixed)
+            torch.tensor(float(self.args.matching_global_temperature)),
+            requires_grad=not self.args.matching_global_temperature_fixed)
         self.temperature_weight = torch.nn.Parameter(
-            float(self.args.voting_global_weights_const_value) * torch.ones(1),
-            requires_grad=not self.args.voting_global_weights_fixed)
-        print(f"self.global_temperature {self.global_temperature}")
-        print(f"self.temperature_weight {self.temperature_weight}")
+            float(self.args.matching_temperature_weight) * torch.ones(1),
+            requires_grad=not self.args.matching_temperature_weight_fixed)
 
     def forward(self, support_set, support_labels, queries):
+        """
+        - adds positional encoding to the features
+        - create the clip feature tuples
+        - apply the cross attention projection head (K and V)
+        - computes the query prototypes
+        - computes the distance between the query prototypes and the query projected in the V space
+
+        :param support_set: the support features
+        :param support_labels: the labels of the support clips
+        :param queries: the query features
+        :return: a dictionary with the query to prototype similarity as a logit
+        """
         n_queries = queries.shape[0]
         n_support = support_set.shape[0]
 
@@ -142,40 +183,3 @@ class TemporalCrossTransformer(nn.Module):
         return_dict = {'logits': all_distances_tensor}
 
         return return_dict
-
-
-class TRX_few_shot_model(FewShotHead):
-    """
-    Backbone connected to Temporal Cross Transformers of multiple cardinalities.
-    """
-
-    def __init__(self, args):
-        super(TRX_few_shot_model, self).__init__(args)
-
-        # fill default args
-        self.args.trans_linear_out_dim = 1152
-        self.args.trans_dropout = 0.1
-
-        self.transformers = nn.ModuleList(
-            [TemporalCrossTransformer(args, s) for s in args.temp_set])
-
-    def forward(self, support_images, support_labels, target_images):
-
-        support_features, target_features = self.get_feats(support_images, target_images)
-
-        all_logits = [t(support_features, support_labels, target_features)['logits'] for t in
-                      self.transformers]
-        all_logits = torch.stack(all_logits, dim=-1)
-        sample_logits = all_logits
-        sample_logits = torch.mean(sample_logits, dim=[-1])
-
-        return_dict = {'logits': sample_logits}
-        return return_dict
-
-    def distribute_model(self):
-        """
-        Distributes the CNNs over multiple GPUs. Leaves TRX on GPU 0.
-        :return: Nothing
-        """
-        FewShotHead.distribute_model()
-        self.transformers.cuda(0)
