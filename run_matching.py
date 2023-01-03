@@ -178,6 +178,9 @@ class Learner:
         else:
             args.backbone_feature_dimension = 512
 
+        # if the backbone is R2+1D, it will load precomputed features
+        args.load_features = args.backbone.startswith("r2+1d")
+
         i_maximum_iter = (args.training_iterations - args.first_val_iter) // args.val_iter_freq + 1
         args.val_iters = [args.first_val_iter + i * args.val_iter_freq for i in range(i_maximum_iter)]
 
@@ -302,7 +305,8 @@ class Learner:
                 iteration += 1
 
                 task_dict = self.prepare_task(task_dict)
-                model_dict = self.model(task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
+                model_dict = self.model(
+                    task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
                 target_logits = model_dict['logits']
                 accuracy = self.accuracy_fn(target_logits, task_dict['target_labels'])
                 accuracies.append(accuracy.item())

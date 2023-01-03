@@ -35,8 +35,7 @@ class CNN_OTAM(CNN_FSHead):
         print(f"self.temperature_weight {self.temperature_weight}")
 
     def get_frame_to_frame_similarity_matrix(self, support_images, target_images):
-        # support_features, target_features = self.get_feats(support_images, target_images)
-        support_features, target_features = support_images, target_images
+        support_features, target_features = self.get_feats(support_images, target_images)
 
         n_queries = target_features.shape[0]
         n_support = support_features.shape[0]
@@ -160,7 +159,12 @@ class CNN_OTAM(CNN_FSHead):
 
     def loss(self, task_dict, model_dict):
         """
+        Computes the loss between the logits and the true labels. By default, it is the cross
+        entropy loss.
 
+        :param task_dict: dictionary containing the ground truth labels stored at key "target_labels
+        :param model_dict: dictionary containing the logits stored at key logits
+        :return: the cross entropy loss
         """
         return F.cross_entropy(model_dict["logits"], task_dict["target_labels"].long())
 

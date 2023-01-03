@@ -8,18 +8,22 @@ from itertools import combinations
 
 class CNN_FSHead(nn.Module):
     """
-    Base class which handles a few-shot method. Contains a resnet backbone which computes features.
+    Base class which handles a few-shot method.
+    In this version, it is mainly used with a video loader that feeds features as input. But it can
+    also be used with a video loader that feeds clips or images as inputs and compute the features.
     """
-
     def __init__(self, args):
         super(CNN_FSHead, self).__init__()
         self.train()
         self.args = args
-        if self.args.backbone.startswith("resnet"):
+
+        # initialize the backbone if we don't load the features
+        if not self.args.load_features:
             self.get_backbone()
         else:
             self.backbone = None
 
+        # defines the clip tuples
         if self.args.clip_tuple_length > 1:
             frame_idxs = list(range(self.args.seq_len))
             frame_combinations = combinations(frame_idxs, self.args.clip_tuple_length)
@@ -30,6 +34,8 @@ class CNN_FSHead(nn.Module):
             self.clip_tuples = None
 
     def get_backbone(self):
+        """ Initializes the backbone for different resnet architectures and preload the weights
+        """
         if self.args.backbone == "resnet18":
             backbone = models.resnet18(pretrained=True)
         elif self.args.backbone == "resnet34":
@@ -45,9 +51,20 @@ class CNN_FSHead(nn.Module):
         self.backbone = nn.Sequential(*list(backbone.children())[:last_layer_idx])
 
     def get_feats(self, support_images, target_images):
+        """Takes in images from the support set and query video and returns CNN features.
+        If the load_feature is true, the video loader already returns the features and there is no
+        need for extra computation
+
+        :param support_images: the support images if self.args.load_features is false / the support
+          features if self.args.load_features is true
+        :param target_images: the query images if self.args.load_features is false / the query
+          features if self.args.load_features is true
+        :return: the support features
+        :return: the query features
         """
-        Takes in images from the support set and query video and returns CNN features.
-        """
+        if self.args.load_features:
+            return support_images, target_images
+
         support_features = self.backbone(support_images).squeeze()
         target_features = self.backbone(target_images).squeeze()
 
@@ -58,12 +75,15 @@ class CNN_FSHead(nn.Module):
 
         return support_features, target_features
 
-    def get_video_to_class_similarity(self, results_multi_shot):
-        """
-        Aggregates per class, when k shot is higher than 1. Mean aggregation by default.
+    def get_video_to_class_similarity(self, video_to_video_similarity):
+        """Aggregates the video-to-video scores into video-to-class when there are more than one
+        example per class. By default, the mean aggregation is used.
+
+        :param video_to_video_similarity: video-to-video similarity scores
+        :return: the video-to-class scores
         """
         results_multi_shot_ordered_per_class = rearrange(
-            results_multi_shot, "a (b c) -> a b c", b=self.args.way)
+            video_to_video_similarity, "a (b c) -> a b c", b=self.args.way)
         # (way * query_per_class, way, shot)
 
         return torch.mean(results_multi_shot_ordered_per_class, dim=2)
@@ -71,8 +91,15 @@ class CNN_FSHead(nn.Module):
 
     def forward(self, support_images, support_labels, target_images):
         """
-        Should return a dict containing logits which are required for computing accuracy. Dict can also contain
-        other info needed to compute the loss. E.g. inter class distances.
+        Should return a dict containing logits which are required for computing accuracy. Dict can
+        also contain other info needed to compute the loss. E.g. inter class distances.
+
+        :param support_images: the support images if self.args.load_features is false / the support
+          features if self.args.load_features is true
+        :param support_labels: the labels of the support images
+        :param target_images: the query images if self.args.load_features is false / the query
+          features if self.args.load_features is true
+        :return: the logits
         """
         raise NotImplementedError
 
@@ -87,8 +114,11 @@ class CNN_FSHead(nn.Module):
 
     def loss(self, task_dict, model_dict):
         """
-        Takes in a the task dict containing labels etc.
-        Takes in the model output dict, which contains "logits", as well as any other info needed to compute the loss.
-        Default is cross entropy loss.
+        Computes the loss between the logits and the true labels. By default, it is the cross
+        entropy loss.
+
+        :param task_dict: dictionary containing the ground truth labels stored at key "target_labels
+        :param model_dict: dictionary containing the logits stored at key logits
+        :return: the cross entropy loss
         """
         return F.cross_entropy(model_dict["logits"], task_dict["target_labels"].long())

@@ -160,8 +160,9 @@ class CNN_TRX(CNN_FSHead):
             [TemporalCrossTransformer(args, s) for s in args.temp_set])
 
     def forward(self, support_images, support_labels, target_images):
-        # support_features, target_features = self.get_feats(support_images, target_images)
-        support_features, target_features = support_images, target_images
+
+        support_features, target_features = self.get_feats(support_images, target_images)
+
         all_logits = [t(support_features, support_labels, target_features)['logits'] for t in
                       self.transformers]
         all_logits = torch.stack(all_logits, dim=-1)
