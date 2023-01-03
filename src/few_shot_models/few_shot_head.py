@@ -6,14 +6,17 @@ from einops import rearrange
 from itertools import combinations
 
 
-class CNN_FSHead(nn.Module):
+class FewShotHead(nn.Module):
     """
     Base class which handles a few-shot method.
-    In this version, it is mainly used with a video loader that feeds features as input. But it can
-    also be used with a video loader that feeds clips or images as inputs and compute the features.
+
+    This class was first introduced in https://github.com/tobyperrett/few-shot-action-recognition
+    and adapted for r2+1d precomputed features. In this version, it is fed with features as input
+    (through a video loader). But it can also be used with a clips or images as inputs, and it
+    requires to adapt the method get_backbone.
     """
     def __init__(self, args):
-        super(CNN_FSHead, self).__init__()
+        super(FewShotHead, self).__init__()
         self.train()
         self.args = args
 
@@ -94,10 +97,10 @@ class CNN_FSHead(nn.Module):
         Should return a dict containing logits which are required for computing accuracy. Dict can
         also contain other info needed to compute the loss. E.g. inter class distances.
 
-        :param support_images: the support images if self.args.load_features is false / the support
+        :param support_images: the support clips if self.args.load_features is false / the support
           features if self.args.load_features is true
         :param support_labels: the labels of the support images
-        :param target_images: the query images if self.args.load_features is false / the query
+        :param target_images: the query clips if self.args.load_features is false / the query
           features if self.args.load_features is true
         :return: the logits
         """

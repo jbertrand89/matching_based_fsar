@@ -11,7 +11,7 @@ import sys
 path = os.path.abspath('../few-shot-action-recognition')  # include the trx repository
 sys.path.append(path)
 from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy, verify_checkpoint_dir
-from src.few_shot_models import CNN_TRX, CNN_OTAM, CNN_TSN, CNN_PAL
+from src.few_shot_models import TRX_few_shot_model, MatchingBasedFewShotModel
 from src.data_loaders.video_feature_reader import VideoFeatureReader
 
 
@@ -64,13 +64,9 @@ class Learner:
 
     def init_model(self):
         if self.args.method == "trx":
-            model = CNN_TRX(self.args)
+            model = TRX_few_shot_model(self.args)
         elif self.args.method == "otam":
-            model = CNN_OTAM(self.args)
-        elif self.args.method == "tsn":
-            model = CNN_TSN(self.args)        
-        elif self.args.method == "pal":
-            model = CNN_PAL(self.args)
+            model = MatchingBasedFewShotModel(self.args)
 
         model = model.to(self.device) 
 

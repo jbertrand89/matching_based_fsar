@@ -5,7 +5,7 @@ from torch.autograd import Variable
 from itertools import combinations
 
 from utils import extract_class_indices, cos_sim
-from .few_shot_head import CNN_FSHead
+from .few_shot_head import FewShotHead
 
 
 class PositionalEncoding(nn.Module):
@@ -144,13 +144,13 @@ class TemporalCrossTransformer(nn.Module):
         return return_dict
 
 
-class CNN_TRX(CNN_FSHead):
+class TRX_few_shot_model(FewShotHead):
     """
     Backbone connected to Temporal Cross Transformers of multiple cardinalities.
     """
 
     def __init__(self, args):
-        super(CNN_TRX, self).__init__(args)
+        super(TRX_few_shot_model, self).__init__(args)
 
         # fill default args
         self.args.trans_linear_out_dim = 1152
@@ -177,5 +177,5 @@ class CNN_TRX(CNN_FSHead):
         Distributes the CNNs over multiple GPUs. Leaves TRX on GPU 0.
         :return: Nothing
         """
-        CNN_FSHead.distribute_model()
+        FewShotHead.distribute_model()
         self.transformers.cuda(0)

@@ -1,4 +1,2 @@
-from .otam_model import CNN_OTAM
-from .trx_model import CNN_TRX
-from .pal_model import CNN_PAL
-from .tsn_model import CNN_TSN
+from .matching_based_few_shot_model import MatchingBasedFewShotModel
+from .trx_model import TRX_few_shot_model
