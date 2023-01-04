@@ -111,7 +111,7 @@ Model zoo
       <th>Dataset</th>
       <th>Matching method</th>
       <th>Backbone</th>
-      <th>Shot</th>
+      <th># shot</th>
       <th>Accuracy</th>
       <th>Seed 1</th>
       <th>Seed 5</th>
@@ -126,10 +126,10 @@ Model zoo
       <th>R2+1D</th>
       <th>1</th>
       <th>66.6 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_1shots_seed1.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_1shots_seed5.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_1shots_seed10.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/config_ssv2_linear_5way_1shots_all_seeds.txt">config</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_1shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_1shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_1shots_seed10.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/config_ssv2_linear_5way_1shots_all_seeds.txt">config</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -137,10 +137,10 @@ Model zoo
       <th>R2+1D</th>
       <th>5</th>
       <th>80.1 +- 0.3</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_5shots_seed1.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_5shots_seed5.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/ssv2_linear_5way_5shots_seed10.pt">model</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2_large/linear/config_ssv2_linear_5way_5shots_all_seeds.txt">config</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_5shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_5shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/ssv2_linear_5way_5shots_seed10.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/linear/config_ssv2_linear_5way_5shots_all_seeds.txt">config</a></td>
     </tr>
   </tbody>
 </table>
