@@ -7,7 +7,8 @@ def get_saved_episode_dir(args):
     """
 
     saved_episodes_dir = os.path.join(
-        args.test_episode_dir, args.dataset_name, f"w{args.way}_s{args.shot}_l{args.seq_len}")
+        args.test_episode_dir, args.dataset_name, "features",
+        f"{args.dataset_name}_w{args.way}_s{args.shot}")
     print(f"10000 episodes in {saved_episodes_dir}")
     os.makedirs(saved_episodes_dir, exist_ok=True)
     return saved_episodes_dir

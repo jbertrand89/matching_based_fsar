@@ -113,7 +113,7 @@ class Learner:
 
         # PARAMETERS ADDED for the paper Rethinking matching-based few-shot action recognition
         parser.add_argument("--dataset_name", type=str)
-        parser.add_argument('--seed', type=int, default=0, help="global seed value")
+        parser.add_argument('--seed', type=int, default=1, help="global seed value")
         parser.add_argument(
             '--temp_set', nargs='+', type=int, help='cardinalities e.g. 2,3 is pairs and triples',
             default=[2, 3])
@@ -192,7 +192,7 @@ class Learner:
         # if the backbone is R2+1D, it will load precomputed features
         args.load_features = args.backbone.startswith("r2+1d")
 
-        if args.dataset_name in {"ssv2-large", "ssv2_large"}:
+        if args.dataset_name == "ssv2":
             args.first_val_iter = 10000
             args.val_iter_freq = 10000
             args.training_iterations = 150002
@@ -434,7 +434,7 @@ class Learner:
         print(f"evaluation lasted {t1 - t0}s")
         logfile_test.write(f"seed {self.args.seed}\n")
         logfile_test.write(f"iteration {self.start_iteration}\n")
-        self.test_accuracies.print(logfile_test, accuracy_dict)
+        self.test_accuracies.print(logfile_test, accuracy_dict, mode)
         item = self.args.dataset
         self.writer.add_scalar('Accuracy/test', accuracy_dict[item]["accuracy"], self.start_iteration)
         self.writer.add_scalar('Confidence/test', accuracy_dict[item]["confidence"], self.start_iteration)
