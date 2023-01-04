@@ -11,8 +11,10 @@ import sys
 path = os.path.abspath('../few-shot-action-recognition')  # include the trx repository
 sys.path.append(path)
 from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy, verify_checkpoint_dir
+
 from src.few_shot_models import TRX_few_shot_model, MatchingBasedFewShotModel
 from src.data_loaders.video_feature_reader import VideoFeatureReader
+from src.evaluation.test_episode_io import save_episode, load_episode, get_saved_episode_dir
 
 
 # torch.autograd.set_detect_anomaly(True)
@@ -45,27 +47,30 @@ class Learner:
         self.args.device = self.device
         self.model = self.init_model()
 
-        self.video_dataset = VideoFeatureReader(self.args)
-        self.video_loader = torch.utils.data.DataLoader(
-            self.video_dataset, batch_size=1, num_workers=self.args.num_workers)
-        self.val_accuracies = TestAccuracies([self.args.dataset])
+        if not self.args.load_test_episodes or not self.args.test_only:
+            self.video_dataset = VideoFeatureReader(self.args)
+            self.video_loader = torch.utils.data.DataLoader(
+                self.video_dataset, batch_size=1, num_workers=self.args.num_workers)
+
+        self.val_accuracies = TestAccuracies([self.args.dataset]) # todo check this
 
         self.accuracy_fn = aggregate_accuracy
+
+        if not self.args.test_only:
+            if self.args.opt == "adam":
+                self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
+            elif self.args.opt == "sgd":
+                self.optimizer = torch.optim.SGD(self.model.parameters(), lr=self.args.learning_rate)
         
-        if self.args.opt == "adam":
-            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
-        elif self.args.opt == "sgd":
-            self.optimizer = torch.optim.SGD(self.model.parameters(), lr=self.args.learning_rate)
-        
-        self.scheduler = MultiStepLR(self.optimizer, milestones=self.args.sch, gamma=0.1)
+            self.scheduler = MultiStepLR(self.optimizer, milestones=self.args.sch, gamma=0.1)
+            self.optimizer.zero_grad()
         
         self.start_iteration = 0
-        self.optimizer.zero_grad()
 
     def init_model(self):
         if self.args.method == "trx":
             model = TRX_few_shot_model(self.args)
-        elif self.args.method == "otam":
+        elif self.args.method == "matching-based":
             model = MatchingBasedFewShotModel(self.args)
 
         model = model.to(self.device) 
@@ -102,16 +107,17 @@ class Learner:
         parser.add_argument("--img_size", type=int, default=224, help="Input image size to the CNN after cropping.")
         parser.add_argument("--num_gpus", type=int, default=4, help="Number of GPUs to split the ResNet over")
         parser.add_argument('--sch', nargs='+', type=int, help='iters to drop learning rate', default=[1000000])
-        parser.add_argument("--method", choices=["trx", "otam", "tsn", "pal"], default="trx", help="few-shot method to use")
+        parser.add_argument("--method", choices=["trx", "matching-based", "tsn", "pal"], default="trx", help="few-shot method to use")
         parser.add_argument("--pretrained_backbone", "-pt", type=str, default=None, help="pretrained backbone path, used by PAL")
         parser.add_argument("--val_on_test", default=False, action="store_true", help="Danger: Validate on the test set, not the validation set. Use for debugging or checking overfitting on test set. Not good practice to use when developing, hyperparameter tuning or training models.")
 
         # PARAMETERS ADDED for the paper Rethinking matching-based few-shot action recognition
+        parser.add_argument("--dataset_name", type=str)
         parser.add_argument('--seed', type=int, default=0, help="global seed value")
         parser.add_argument(
             '--temp_set', nargs='+', type=int, help='cardinalities e.g. 2,3 is pairs and triples',
             default=[2, 3])
-        parser.add_argument("--gradient_clip", type=int, default=1)
+        parser.add_argument("--gradient_clip", type=int, default=1000)
 
         # dataloader parameters
         parser.add_argument(
@@ -129,6 +135,15 @@ class Learner:
         parser.add_argument(
             '--get_best_val_checkpoint', default=False, action="store_true",
             help="run the evaluation on the best model evaluated on the validation dataset")
+        parser.add_argument(
+            "--save_test_episodes", default=False, action="store_true",
+            help="if set to true, it will save all the test episodes in test_episode_dir")
+        parser.add_argument(
+            "--load_test_episodes", default=False, action="store_true",
+            help="if set to true, it will load all the test episodes from test_episode_dir")
+        parser.add_argument(
+            "--test_episode_dir", type=str, default="",
+            help="needs to be defined if save_test_episodes or load_test_episodes is true")
 
         # matching temperatures
         parser.add_argument(
@@ -177,8 +192,23 @@ class Learner:
         # if the backbone is R2+1D, it will load precomputed features
         args.load_features = args.backbone.startswith("r2+1d")
 
+        if args.dataset_name in {"ssv2-large", "ssv2_large"}:
+            args.first_val_iter = 10000
+            args.val_iter_freq = 10000
+            args.training_iterations = 150002
+            args.print_freq = 1000
+            args.save_freq = 10000
+        else:
+            args.first_val_iter = 1000
+            args.val_iter_freq = 1000
+            args.training_iterations = 20002
+            args.print_freq = 100
+            args.save_freq = 1000
+
         i_maximum_iter = (args.training_iterations - args.first_val_iter) // args.val_iter_freq + 1
         args.val_iters = [args.first_val_iter + i * args.val_iter_freq for i in range(i_maximum_iter)]
+
+        args.test_only = args.get_best_val_checkpoint or args.test_model_name is not None
 
         return args
 
@@ -281,39 +311,69 @@ class Learner:
 
         return task_loss, task_accuracy
 
+    def compute_accuracies_from_loaded_episodes(self, saved_episodes_dir, n_episodes):
+        accuracies = []
+        for episode_id in range(1, n_episodes + 1):
+            support_set, support_labels, target_set, target_labels = load_episode(
+                saved_episodes_dir, episode_id)
+
+            model_dict = self.model(support_set, support_labels, target_set)
+            target_logits = model_dict['logits']
+
+            accuracy = self.accuracy_fn(target_logits, target_labels)
+            accuracies.append(accuracy.item())
+            del target_logits
+        return accuracies
+
+    def compute_accuracies_from_dataloader(self, saved_episodes_dir, n_episodes):
+        accuracies = []
+        iteration = 0
+        for task_dict in self.video_loader:
+            if iteration >= n_episodes:
+                break
+            iteration += 1
+
+            task_dict = self.prepare_task(task_dict)
+            if self.args.save_test_episodes:
+                save_episode(saved_episodes_dir, iteration, task_dict)
+
+            model_dict = self.model(
+                task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
+            target_logits = model_dict['logits']
+            accuracy = self.accuracy_fn(target_logits, task_dict['target_labels'])
+            accuracies.append(accuracy.item())
+            del target_logits
+        return accuracies
+
     def evaluate(self, mode="val"):
+
+        saved_episodes_dir = None
+        if self.args.save_test_episodes or self.args.load_test_episodes:
+            saved_episodes_dir = get_saved_episode_dir(self.args)
+
         self.model.eval()
         with torch.no_grad():
-
-            self.video_loader.dataset.split = mode
             if mode == "val":
                 n_tasks = self.args.num_val_tasks
             elif mode == "test":
                 n_tasks = self.args.num_test_tasks
 
             accuracy_dict = {}
-            accuracies = []
-            iteration = 0
             item = self.args.dataset
-            for task_dict in self.video_loader:
-                if iteration >= n_tasks:
-                    break
-                iteration += 1
-
-                task_dict = self.prepare_task(task_dict)
-                model_dict = self.model(
-                    task_dict['support_set'], task_dict['support_labels'], task_dict['target_set'])
-                target_logits = model_dict['logits']
-                accuracy = self.accuracy_fn(target_logits, task_dict['target_labels'])
-                accuracies.append(accuracy.item())
-                del target_logits
+            if self.args.load_test_episodes:
+                accuracies = self.compute_accuracies_from_loaded_episodes(
+                    saved_episodes_dir, n_tasks)
+            else:
+                self.video_loader.dataset.split = mode
+                accuracies = self.compute_accuracies_from_dataloader(saved_episodes_dir, n_tasks)
+                self.video_loader.dataset.split = "train"
 
             accuracy = np.array(accuracies).mean() * 100.0
             # 95% confidence interval
             confidence = (196.0 * np.array(accuracies).std()) / np.sqrt(len(accuracies))
 
             accuracy_dict[item] = {"accuracy": accuracy, "confidence": confidence}
-            self.video_loader.dataset.split = "train"
+
         self.model.train()
         
         return accuracy_dict
@@ -338,18 +398,18 @@ class Learner:
         torch.save(d, os.path.join(self.checkpoint_dir, 'checkpoint{}.pt'.format(iteration)))   
         torch.save(d, os.path.join(self.checkpoint_dir, name))
 
-    def load_checkpoint(self, name="checkpoint.pt"):
+    def load_checkpoint(self, name="checkpoint.pt", test_only=False):
         checkpoint_name = os.path.join(self.checkpoint_dir, name)
         print(f"Loading {checkpoint_name}")
         checkpoint = torch.load(checkpoint_name)
         self.start_iteration = checkpoint['iteration']
         self.model.load_state_dict(checkpoint['model_state_dict'])
-        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        self.scheduler.load_state_dict(checkpoint['scheduler'])
+        if not test_only:
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler'])
 
     def run_test(self, mode):
 
-        logfile_path = self.logfile.name
         if mode == "val":
             n_tasks = self.args.num_val_tasks
         else:
@@ -360,10 +420,12 @@ class Learner:
         else:
             suffix = ""
 
-        logfile_path = logfile_path.replace(".txt", f"_{mode}_{n_tasks}{suffix}.txt")
+        model_name = self.args.test_model_name.split(".")[0]
+        logfile_path = os.path.join(
+            self.args.checkpoint_dir, f"{model_name}_log_{mode}_{n_tasks}{suffix}.txt")
         logfile_test = open(logfile_path, "a", buffering=1)
         print(f"load {self.args.test_model_name}")
-        self.load_checkpoint(self.args.test_model_name)
+        self.load_checkpoint(self.args.test_model_name, test_only=self.args.test_only)
 
         self.test_accuracies = TestAccuracies([self.args.dataset])
         t0 = time.time()
@@ -376,6 +438,8 @@ class Learner:
         item = self.args.dataset
         self.writer.add_scalar('Accuracy/test', accuracy_dict[item]["accuracy"], self.start_iteration)
         self.writer.add_scalar('Confidence/test', accuracy_dict[item]["confidence"], self.start_iteration)
+        print(f"global_temperature {self.model.global_temperature}")
+        print(f"temperature_weight {self.model.temperature_weight}")
         logfile_test.close()
 
 
@@ -388,6 +452,8 @@ def main():
         learner.run_test(learner.args.evaluation_mode)
     elif learner.args.test_model_name is not None:
         print(f"run test")
+        learner.args.test_model_name = os.path.join(
+            learner.args.checkpoint_dir, learner.args.test_model_name)
         learner.run_test(learner.args.evaluation_mode)
     else:
         print(f"train")
