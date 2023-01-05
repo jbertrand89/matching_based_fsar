@@ -103,14 +103,14 @@ class MatchingBasedFewShotModel(FewShotHead):
 
     def transpose_similarity(self, clip_to_clip_similarity):
         """ Transposes the clip-to-clip similarity. The transposed matrix is used for the
-        chamfer-support and chamfer++ matching functions. Otherwise, it is not computed.
+        chamfer-support and chamfer matching functions. Otherwise, it is not computed.
 
         :param clip_to_clip_similarity: input similarity matrix of shape
           [query video count, support video count, query clip count, support clip count]
         :return: the transposed similarity matrix of shape
           [query video count, support video count, support clip count, query clip count]
         """
-        if self.args.matching_function in {"chamfer-support", "chamfer++"}:
+        if self.args.matching_function in {"chamfer-support", "chamfer"}:
             return torch.transpose(clip_to_clip_similarity, dim0=-2, dim1=-1)
         return None
 
@@ -163,7 +163,7 @@ class MatchingBasedFewShotModel(FewShotHead):
         """
         if self.args.matching_function == "chamfer-support":
             video_to_video_similarity = self.matching_function(clip_to_clip_similarity_transposed)
-        elif self.args.matching_function == "chamfer++":
+        elif self.args.matching_function == "chamfer":
             video_to_video_similarity = self.matching_function.forward(clip_to_clip_similarity)
             video_to_video_similarity_transposed = self.matching_function(
                 clip_to_clip_similarity_transposed)

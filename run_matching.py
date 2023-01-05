@@ -166,7 +166,7 @@ class Learner:
         parser.add_argument(
             "--matching_function", default="otam",
             choices=["mean", "diag", "otam", "linear", "max", "chamfer-query", "chamfer-support",
-                     "chamfer++"],
+                     "chamfer"],
             help="matching function")
         parser.add_argument(
             "--video_to_class_matching", default="separate", choices=["separate", "joint"],
