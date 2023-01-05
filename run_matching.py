@@ -438,8 +438,8 @@ class Learner:
         item = self.args.dataset
         self.writer.add_scalar('Accuracy/test', accuracy_dict[item]["accuracy"], self.start_iteration)
         self.writer.add_scalar('Confidence/test', accuracy_dict[item]["confidence"], self.start_iteration)
-        print(f"global_temperature {self.model.global_temperature}")
-        print(f"temperature_weight {self.model.temperature_weight}")
+        # print(f"global_temperature {self.model.global_temperature}")
+        # print(f"temperature_weight {self.model.temperature_weight}")
         logfile_test.close()
 
 
