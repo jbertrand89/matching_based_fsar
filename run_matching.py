@@ -121,13 +121,15 @@ class Learner:
 
         # dataloader parameters
         parser.add_argument(
-            "--split_paths", nargs='+', default=None,
-            help="split paths, used in the feature loader.")
+            "--split_dirs", nargs='+', default=None,
+            help="directory containing the pre-saved features for each split, used in the feature "
+                 "loader.")
         parser.add_argument(
             "--split_names", nargs='+', default=None,
             help="split names, used in the feature loader.")
         parser.add_argument(
-            "--split_seeds", nargs='+', default=None, help="generator seeds")
+            "--split_seeds", nargs='+', default=None,
+            help="seed for each split, used in the feature loader ")
 
         # evaluation parameters
         parser.add_argument("--evaluation_mode", choices=["test", "val"], default="test",
