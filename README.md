@@ -268,6 +268,54 @@ The following table provides you the specifications of each dataset.
       <th> - </th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/otam/inference_ssv2_otam_5way_5shots_all_seeds.txt">script_inference</a></td>
     </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>trx</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>65.1 +- 0.2</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_1shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_1shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_1shots_seed10.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/download_ssv2_trx_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/inference_ssv2_trx_5way_1shots_all_seeds.txt">script_inference</a></td>
+    </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>trx</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>82.0 +- 0.0</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_5shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_5shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/ssv2_trx_5way_5shots_seed10.pt">model</a></td>
+      <td> - </td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/trx/inference_ssv2_trx_5way_5shots_all_seeds.txt">script_inference</a></td>
+    </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>visil</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>67.7 +- 0.0</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_1shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_1shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_1shots_seed10.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/download_ssv2_visil_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/inference_ssv2_visil_5way_1shots_all_seeds.txt">script_inference</a></td>
+    </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>visil</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>81.4 +- 0.0</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_5shots_seed1.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_5shots_seed5.pt">model</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/ssv2_visil_5way_5shots_seed10.pt">model</a></td>
+      <td> - </td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/inference_ssv2_visil_5way_5shots_all_seeds.txt">script_inference</a></td>
+    </tr>
   </tbody>
 </table>
 
