@@ -14,6 +14,7 @@ from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accura
 
 from src.few_shot_models import TRX_few_shot_model, MatchingBasedFewShotModel
 from src.data_loaders.video_feature_reader import VideoFeatureReader
+from src.data_loaders.video_feature_and_clip_reader import VideoFeatureAndClipReader
 from src.evaluation.test_episode_io import save_episode, load_episode, get_saved_episode_dir
 
 
@@ -47,25 +48,60 @@ class Learner:
         self.args.device = self.device
         self.model = self.init_model()
 
-        if not self.args.load_test_episodes or not self.args.test_only:
-            self.video_dataset = VideoFeatureReader(self.args)
-            self.video_loader = torch.utils.data.DataLoader(
-                self.video_dataset, batch_size=1, num_workers=self.args.num_workers)
+        self.init_loaders()
 
         self.val_accuracies = TestAccuracies([self.args.dataset]) # todo check this
-
         self.accuracy_fn = aggregate_accuracy
 
         if not self.args.test_only:
             if self.args.opt == "adam":
-                self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
+                self.optimizer = torch.optim.Adam(self.model.parameters(),
+                                                  lr=self.args.learning_rate)
             elif self.args.opt == "sgd":
-                self.optimizer = torch.optim.SGD(self.model.parameters(), lr=self.args.learning_rate)
-        
+                self.optimizer = torch.optim.SGD(self.model.parameters(),
+                                                 lr=self.args.learning_rate)
+
             self.scheduler = MultiStepLR(self.optimizer, milestones=self.args.sch, gamma=0.1)
             self.optimizer.zero_grad()
         
         self.start_iteration = 0
+
+    def init_loaders(self):
+        if not self.args.test_only:
+            # train loader
+            # self.train_video_dataset = VideoFeatureAndClipReader(
+            #     self.args,
+            #     "train",
+            #     self.args.train_split_dir,
+            #     self.args.train_seed
+            # )
+            self.train_video_dataset = VideoFeatureReader(
+                self.args,
+                "train",
+                self.args.train_split_dir,
+                self.args.train_seed
+            )
+            self.train_video_loader = torch.utils.data.DataLoader(
+                self.train_video_dataset,
+                batch_size=1,
+                num_workers=self.args.num_workers
+            )
+
+            # val loader
+            self.val_video_dataset = VideoFeatureReader(
+                self.args,
+                "val",
+                self.args.val_split_dir,
+                self.args.val_seed
+            )
+
+        if not self.args.load_test_episodes:
+            self.test_video_dataset = VideoFeatureReader(
+                self.args,
+                "test",
+                self.args.test_split_dir,
+                self.args.test_seed
+            )
 
     def init_model(self):
         if self.args.method == "trx":
@@ -121,15 +157,17 @@ class Learner:
 
         # dataloader parameters
         parser.add_argument(
-            "--split_dirs", nargs='+', default=None,
-            help="directory containing the pre-saved features for each split, used in the feature "
-                 "loader.")
+            "--train_split_dir", type=str, default=None,
+            help="directory containing the pre-saved features for the train split")
         parser.add_argument(
-            "--split_names", nargs='+', default=None,
-            help="split names, used in the feature loader.")
+            "--val_split_dir", type=str, default=None,
+            help="directory containing the pre-saved features for the val split")
         parser.add_argument(
-            "--split_seeds", nargs='+', default=None,
-            help="seed for each split, used in the feature loader ")
+            "--test_split_dir", type=str, default=None,
+            help="directory containing the pre-saved features for the test split")
+        parser.add_argument("--train_seed", type=int, default=0, help="train seed")
+        parser.add_argument("--val_seed", type=int, default=0, help="val seed")
+        parser.add_argument("--test_seed", type=int, default=0, help="test seed")
 
         # evaluation parameters
         parser.add_argument("--evaluation_mode", choices=["test", "val"], default="test",
@@ -226,7 +264,7 @@ class Learner:
         best_val_accuracy = 0
         timings = []
 
-        for task_dict in self.video_loader:
+        for task_dict in self.train_video_loader:
             if iteration >= total_iterations:
                 break
 
@@ -327,10 +365,17 @@ class Learner:
             del target_logits
         return accuracies
 
-    def compute_accuracies_from_dataloader(self, saved_episodes_dir, n_episodes):
+    def compute_accuracies_from_dataloader(self, saved_episodes_dir, n_episodes, mode="val"):
         accuracies = []
         iteration = 0
-        for task_dict in self.video_loader:
+        dataset = self.val_video_dataset if mode == "val" else self.test_video_dataset
+        dataset.reset_generator()
+        video_loader = torch.utils.data.DataLoader(
+            dataset,
+            batch_size=1,
+            num_workers=self.args.num_workers
+        )
+        for task_dict in video_loader:
             if iteration >= n_episodes:
                 break
             iteration += 1
@@ -366,9 +411,8 @@ class Learner:
                 accuracies = self.compute_accuracies_from_loaded_episodes(
                     saved_episodes_dir, n_tasks)
             else:
-                self.video_loader.dataset.split = mode
-                accuracies = self.compute_accuracies_from_dataloader(saved_episodes_dir, n_tasks)
-                self.video_loader.dataset.split = "train"
+                accuracies = self.compute_accuracies_from_dataloader(
+                    saved_episodes_dir, n_tasks, mode)
 
             accuracy = np.array(accuracies).mean() * 100.0
             # 95% confidence interval

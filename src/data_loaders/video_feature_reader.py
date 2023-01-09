@@ -5,30 +5,24 @@ import torch
 
 
 class VideoFeatureReader(torch.utils.data.Dataset):
-    """ Loads video episodes from pre-saved video features.
-    It loads multiple splits defined by:
+    """ Creates video episodes from pre-saved video features.
+    It loads the episode from a dataset split defined by:
       - a split name (train/val/test)
       - a split directory, where the video features are presaved for this split
       - a split seed, to use different random generators with fixed seed for each split. It enables
       to enforce that the validation episodes are identical from each training iteration
     """
-    def __init__(self, args):
+    def __init__(self, args, split_name, split_dir, split_seed):
         self.device = args.device
-        self.dataset_splits = {}
-        self.random_generator = {}
-        self.generator_seed = {}
-        for split_name, split_dir, split_seed in zip(
-                args.split_names, args.split_dirs, args.split_seeds):
+        self.split_name = split_name
 
-            # loads all the feature filenames
-            filenames_by_class = self.load_dataset_filenames(split_dir)
-            self.dataset_splits[split_name] = filenames_by_class
+        # loads all the feature filenames
+        self.filenames_by_class = self.load_dataset_filenames(split_dir)
 
-            # creates a generator per split and associated a fixed seed to it
-            self.generator_seed[split_name] = int(split_seed)
-            self.reset_generator(split_name)
+        # creates a generator per split and associated a fixed seed to it
+        self.seed = int(split_seed)
+        self.reset_generator()
 
-        self.split = "train"
         self.clip_count = args.seq_len
         self.class_count = args.way  # also named C way in the literature
         self.example_per_class_count = args.shot  # also named k shot
@@ -38,12 +32,8 @@ class VideoFeatureReader(torch.utils.data.Dataset):
     def __len__(self):
         return 1000000000
 
-    def get_split(self):
-        """ Return the current split being used. It is set in the run_matching process."""
-        return self.dataset_splits[self.split]
-
     def load_dataset_filenames(self, split_dir):
-        """ Loads the filenames of the current split dataset. The split directory follows this
+        """ Loads the filenames of the split dataset. The split directory follows this
         format:
         ├── split_dir
         │   ├── class_name_0
@@ -75,13 +65,11 @@ class VideoFeatureReader(torch.utils.data.Dataset):
         print(f"Loaded {split_dir} count {count}")
         return filenames_by_class
 
-    def reset_generator(self, split_name: str):
-        """ Resets the random generator associated to a given split. It is useful for enforcing the
-        dataloader to see the exact same validation examples for each training iteration.
-
-        :param split_name: name of the current split
+    def reset_generator(self):
+        """ Resets the random generator. It is useful for enforcing the dataloader to see the exact
+        same validation examples for each training iteration.
         """
-        self.random_generator[split_name] = np.random.default_rng(self.generator_seed[split_name])
+        self.random_generator = np.random.default_rng(self.seed)
 
     def load_video_features(self, video_dir, random_generator):
         """ Loads all the features for a video and selects n (self.clip_count) features uniformly
@@ -131,10 +119,9 @@ class VideoFeatureReader(torch.utils.data.Dataset):
         :return: dictionary containing the support features, the support labels, the target features
           and the target labels
         """
-        dataset = self.get_split()
-        random_generator = self.random_generator[self.split]
+        dataset = self.filenames_by_class
 
-        if self.split == "train":
+        if self.split_name == "train":
             n_queries = self.query_per_class
         else:
             n_queries = self.query_per_class_test
@@ -143,7 +130,7 @@ class VideoFeatureReader(torch.utils.data.Dataset):
         # pick c classes (with seed)
         all_classes = np.array(list(dataset.keys()))
         class_count = len(dataset.keys())
-        classes_idx = random_generator.permutation(class_count)[0: way]
+        classes_idx = self.random_generator.permutation(class_count)[0: way]
         batch_classes = all_classes[classes_idx]
 
         support_set = []
@@ -153,20 +140,21 @@ class VideoFeatureReader(torch.utils.data.Dataset):
         for label_id, class_id in enumerate(batch_classes):
             # pick k + q elements names (with seed)
             video_count = len(dataset[class_id])
-            class_video_idx = random_generator.permutation(video_count)[0: self.example_per_class_count + n_queries]
+            example_count = self.example_per_class_count + n_queries
+            class_video_idx = self.random_generator.permutation(video_count)[0: example_count]
             class_video_names = np.array(dataset[class_id])[class_video_idx]
             class_support_video_names = class_video_names[0: self.example_per_class_count]
             class_query_video_names = class_video_names[self.example_per_class_count:]
 
             for video_dir in class_support_video_names:
                 video_features, temporal_positions = self.load_video_features(
-                    video_dir, random_generator)
+                    video_dir, self.random_generator)
                 support_set.append(video_features)
                 support_labels.append(label_id)
 
             for video_dir in class_query_video_names:
                 video_features, temporal_positions = self.load_video_features(
-                    video_dir, random_generator)
+                    video_dir, self.random_generator)
                 target_set.append(video_features)
                 target_labels.append(label_id)
 
