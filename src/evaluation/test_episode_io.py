@@ -34,6 +34,13 @@ def save_episode(saved_episodes_dir, episode_id, task_dict):
     filename_support_labels = os.path.join(saved_episodes_dir, f"support_labels_{episode_id}.pth")
     torch.save(task_dict['support_labels'], filename_support_labels)
 
+    # save support frame names
+    filename_support_frame_names = os.path.join(
+        saved_episodes_dir, f"support_frame_names_{episode_id}.txt")
+    with open(filename_support_frame_names, 'w+') as writer:
+        for support_frame_names in task_dict['support_video_names']:
+            writer.write(f"{support_frame_names[0]} \n")
+
     # save target/query features
     filename_target_set = os.path.join(saved_episodes_dir, f"target_set_{episode_id}.pth")
     torch.save(task_dict['target_set'], filename_target_set)
@@ -41,6 +48,13 @@ def save_episode(saved_episodes_dir, episode_id, task_dict):
     # save target/query labels
     filename_target_labels = os.path.join(saved_episodes_dir, f"target_labels_{episode_id}.pth")
     torch.save(task_dict['target_labels'], filename_target_labels)
+
+    # save target/query frame names
+    filename_target_frame_names = os.path.join(
+        saved_episodes_dir, f"target_frame_names_{episode_id}.txt")
+    with open(filename_target_frame_names, 'w+') as writer:
+        for target_frame_names in task_dict['target_video_names']:
+            writer.write(f"{target_frame_names[0]} \n")
 
 
 def load_episode(saved_episodes_dir, episode_id):

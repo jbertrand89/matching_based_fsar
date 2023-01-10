@@ -14,7 +14,7 @@ from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accura
 
 from src.few_shot_models import TRX_few_shot_model, MatchingBasedFewShotModel
 from src.data_loaders.video_feature_reader import VideoFeatureReader
-from src.data_loaders.video_feature_and_clip_reader import VideoFeatureAndClipReader
+from src.data_loaders.video_feature_and_frame_name_reader import VideoFeatureAndFrameNameReader
 from src.evaluation.test_episode_io import save_episode, load_episode, get_saved_episode_dir
 
 
@@ -69,12 +69,6 @@ class Learner:
     def init_loaders(self):
         if not self.args.test_only:
             # train loader
-            # self.train_video_dataset = VideoFeatureAndClipReader(
-            #     self.args,
-            #     "train",
-            #     self.args.train_split_dir,
-            #     self.args.train_seed
-            # )
             self.train_video_dataset = VideoFeatureReader(
                 self.args,
                 "train",
@@ -96,12 +90,20 @@ class Learner:
             )
 
         if not self.args.load_test_episodes:
-            self.test_video_dataset = VideoFeatureReader(
-                self.args,
-                "test",
-                self.args.test_split_dir,
-                self.args.test_seed
-            )
+            if self.args.save_test_episodes:
+                self.test_video_dataset = VideoFeatureAndFrameNameReader(
+                    self.args,
+                    "test",
+                    self.args.test_split_dir,
+                    self.args.test_seed
+                )
+            else:
+                self.test_video_dataset = VideoFeatureReader(
+                    self.args,
+                    "test",
+                    self.args.test_split_dir,
+                    self.args.test_seed
+                )
 
     def init_model(self):
         if self.args.method == "trx":
