@@ -22,24 +22,33 @@ def load_clip_frames(video_dir: str, clip_length: int):
     :param video_dir: path of the directory containing the video frames
     :param clip_length: number of consecutive frames in a clip
     :return: list of all the possible clips
+    :return: list of all the frame names in the clips clips
     """
     frame_count = len(os.listdir(video_dir))
     max_start_index = frame_count - clip_length + 1
 
     clips = []
+    clip_frame_names = []
+    clip_frame_ids = []
     if frame_count <= clip_length:  # edge case: when there are less frames than the minimum clip
         # length, repeat the last frame
-        clip = [pil_loader(os.path.join(video_dir, f"{frame_id:08}.jpg"))
-                for frame_id in range(1, frame_count + 1)]
-        while len(clip) < clip_length:
-            clip.append(clip[-1])
-        clips.append(clip)
+        frame_ids = list(range(1, frame_count + 1))
+        while len(frame_ids) < clip_length:
+            frame_ids.append(frame_ids[-1])
+        clip_frame_ids.append(frame_ids)
     else:
         for start in range(1, max_start_index + 1):
-            clip = [pil_loader(os.path.join(video_dir, f"{frame_id:08}.jpg"))
-                    for frame_id in range(start, start + clip_length)]
-            clips.append(clip)
-    return clips
+            frame_ids = list(range(start, start + clip_length))
+            clip_frame_ids.append(frame_ids)
+
+    for frame_ids in clip_frame_ids:
+        clip = [pil_loader(os.path.join(video_dir, f"{frame_id:08}.jpg"))
+                for frame_id in frame_ids]
+        clips.append(clip)
+
+        frame_names = [f"{frame_id:08}.jpg" for frame_id in frame_ids]
+        clip_frame_names.append(frame_names)
+    return clips, clip_frame_names
 
 
 def load_clips(video_dir: str, spatial_transform, clip_length: int):
@@ -50,10 +59,11 @@ def load_clips(video_dir: str, spatial_transform, clip_length: int):
     :param video_dir: path of the directory containing the video frames
     :param spatial_transform: spatial transformations to be applied to each frame of the clip
     :param clip_length: number of consecutive frames in a clip
-    :return: list of all the possible clips after spatial transformation
+    :return: tensor containing all the possible clips after spatial transformation
+    :return: list of all the frame names in the clips clips
     """
     # load the clips
-    clips = load_clip_frames(video_dir, clip_length)
+    clips, clip_frame_names = load_clip_frames(video_dir, clip_length)
 
     # apply spatial transform and stack
     spatial_transform.randomize_parameters()
@@ -65,7 +75,7 @@ def load_clips(video_dir: str, spatial_transform, clip_length: int):
 
     transformed_clips = torch.stack(transformed_clips, dim=0)
 
-    return transformed_clips
+    return transformed_clips, clip_frame_names
 
 
 @torch.no_grad()

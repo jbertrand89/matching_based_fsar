@@ -8,8 +8,8 @@ import sys
 path = os.path.abspath('../few-shot-video-classification')  # include the tsl repository
 sys.path.append(path)
 
-from src.spatial_transformations import get_spatial_transorm
-from src.video_clips import load_clips, get_clip_embeddings
+from src.feature_extraction_utils.spatial_transformations import get_spatial_transorm
+from src.feature_extraction_utils.video_clips import load_clips, get_clip_embeddings
 from models import r2plus1d
 
 
@@ -198,6 +198,19 @@ def extract_features_from_paths(cmd_args, paths, spatial_transform, model):
     return processed
 
 
+def save_clip_frame_names(output_dir, clip_frame_names):
+    """ Extracts the video features for the given video.
+
+    :param output_dir: directory where to save the clip frame names
+    :param clip_frame_names: list of all the frame names in the clips clips
+    """
+    clip_names_filename = os.path.join(output_dir, "clip_names.txt")
+    with open(clip_names_filename, "w+") as writer:
+        for clip_names in clip_frame_names:
+            writer.write(",".join(clip_names))
+            writer.write("\n")
+
+
 def extract_video_features(video_dir, output_dir, spatial_transform, clip_length, model):
     """ Extracts the video features for the given video.
 
@@ -210,7 +223,10 @@ def extract_video_features(video_dir, output_dir, spatial_transform, clip_length
       successful
     """
     # Loads the clips
-    clips = load_clips(video_dir, spatial_transform, clip_length)
+    clips, clip_frame_names = load_clips(video_dir, spatial_transform, clip_length)
+
+    # Save the clip frame names
+    save_clip_frame_names(output_dir, clip_frame_names)
 
     # Apply the model
     with torch.no_grad():
