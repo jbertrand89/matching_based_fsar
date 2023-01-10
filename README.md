@@ -197,10 +197,90 @@ The following table provides you the specifications of each dataset.
       <th>visil</th>
       <th>R2+1D</th>
       <th>67.7 +- 0.0</th>
-      <th>81.4 +- 0.0</th>
+      <th>81.3 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/download_ssv2_visil_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/inference_ssv2_visil_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ssv2/visil/inference_loader_ssv2_visil_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>mean</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/mean/download_kinetics100_mean_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/mean/inference_kinetics100_mean_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/mean/inference_loader_kinetics100_mean_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>max</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/max/download_kinetics100_max_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/max/inference_kinetics100_max_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/max/inference_loader_kinetics100_max_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>chamfer++</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/chamfer++/download_kinetics100_chamfer++_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/chamfer++/inference_kinetics100_chamfer++_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/chamfer++/inference_loader_kinetics100_chamfer++_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>diagonal</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/diag/download_kinetics100_diag_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/diag/inference_kinetics100_diag_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/diag/inference_loader_kinetics100_diag_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>linear</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/linear/download_kinetics100_linear_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/linear/inference_kinetics100_linear_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/linear/inference_loader_kinetics100_linear_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>otam</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/otam/download_kinetics100_otam_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/otam/inference_kinetics100_otam_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/otam/inference_loader_kinetics100_otam_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>trx</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/trx/download_kinetics100_trx_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/trx/inference_kinetics100_trx_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/trx/inference_loader_kinetics100_trx_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>visil</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/visil/download_kinetics100_visil_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/visil/inference_kinetics100_visil_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/visil/inference_loader_kinetics100_visil_5way_1shots_all_seeds.txt">script_from_loader</a></td>
     </tr>
   </tbody>
 </table>
