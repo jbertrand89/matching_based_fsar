@@ -282,6 +282,56 @@ The following table provides you the specifications of each dataset.
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/visil/inference_kinetics100_visil_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/kinetics100/visil/inference_loader_kinetics100_visil_5way_1shots_all_seeds.txt">script_from_loader</a></td>
     </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>mean</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/download_ucf101_mean_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/inference_ucf101_mean_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/inference_loader_ucf101_mean_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>diagonal</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/download_ucf101_diag_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/inference_ucf101_diag_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/inference_loader_ucf101_diag_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>linear</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/download_ucf101_linear_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/inference_ucf101_linear_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/inference_loader_ucf101_linear_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>otam</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/download_ucf101_otam_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/inference_ucf101_otam_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/inference_loader_ucf101_otam_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>trx</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/download_ucf101_trx_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/inference_ucf101_trx_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/inference_loader_ucf101_trx_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
   </tbody>
 </table>
 
