@@ -10,8 +10,8 @@ It requires Python >= 3.8
 You can find below the installation script:
 
 ```
-ROOT_DIR=<path_to_the_root_folder>
-cd ${ROOT_DIR}
+ROOT_REPO_DIR=<path_to_the_root_folder>
+cd ${ROOT_REPO_DIR}
 git clone git@github.com:xianyongqin/few-shot-video-classification.git
 git clone git@github.com:tobyperrett/few-shot-action-recognition.git
 git clone git@github.com:jbertrand89/temporal_matching.git

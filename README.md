@@ -1,111 +1,46 @@
-# README
+# Rethinking matching-based few-shot action recognition
 
-## Saved test episodes
+Juliette Bertrand, Yannis Kalantidis, Giorgos Tolias
+
+[[arXiv]()] [[BibTeX]()] [[project page](https://jbertrand89.github.io/temporal_matching_project_page/)]
+
+This repository contains official code for the above-mentioned publication.
+
+
+## Installation
+
+Please follow the steps described in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md).
+
+
+## Data preparation
 
 For more details on the datasets, please refer to [DATA_PREPARATION](https://github.com/jbertrand89/temporal_matching/blob/main/DATA_PREPARATION.md).
-
-For reproducibility, we pre-saved the 10k test episodes for the datasets:
-* Something-Something v2, the few-shot split
-* Kinetics-100, the few-shot split
-* UCF101, the few-shot split
-
-
-
-
-You can download them using the following script.
-
-```
-ROOT_TEST_EPISODE_DIR=<your_path>
-
-for DATASET in "ssv2"
-do
-    DATASET_TEST_EPISODE_DIR=${ROOT_TEST_EPISODE_DIR}/${DATASET}
-    mkdir ${DATASET_TEST_EPISODE_DIR}
-    DATASET_TEST_FEATURE_DIR=${DATASET_TEST_EPISODE_DIR}/features
-    mkdir ${DATASET_TEST_FEATURE_DIR}
-    cd ${DATASET_TEST_FEATURE_DIR}
-    
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/features/${DATASET}_w5_s1.tar.gz
-    tar -xzf ${DATASET}_w5_s1.tar.gz
-    rm -r ${DATASET}_w5_s1.tar.gz
-    
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/features/${DATASET}_w5_s5.tar.gz
-    tar -xzf ${DATASET}_w5_s5.tar.gz
-    rm -r ${DATASET}_w5_s5.tar.gz
-done
-```
-
-
-The following table provides you the specifications of each dataset.
-<table>
-  <thead>
-    <tr style="text-align: right;">
-      <th>Dataset</th>
-      <th>Backbone</th>
-      <th>#shot</th>
-      <th>#classes (way) </th>
-      <th>Episode count</th>
-      <th>Episodes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>ssv2</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>ssv2</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
-    </tr>
-    <tr>
-      <th>kinetics100</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s1.tar.gz">kinetics100_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>kinetics100</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s5.tar.gz">kinetics100_w5_s5</a></td>
-    </tr>
-    <tr>
-      <th>ucf101</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>ucf101</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
-    </tr>
-
-  </tbody>
-</table>
 
 
 ## Inference
 
+We saved the pretrained models presented in the paper:
+* our method: Chamfer++
+* prior works:
+  * [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) (TSL)
+  * [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184) (TRX)
+  * [Few-Shot Video Classification via Temporal Alignment](https://arxiv.org/abs/1906.11415) (TSL)
+  * [ViSiL: Fine-grained Spatio-Temporal Video Similarity Learning](https://arxiv.org/abs/1908.07410) (ViSiL) adapted for few-shot-action-recognition
+* useful baselines:
+  * mean
+  * max
+  * diagonal
+  * linear
+
 
 ### Model zoo
+
+The following Table recaps all the scripts to 
+* download models
+* run inference on the pre-saved episodes 
+* run inference using the dataloader. 
+
+The following subsections describe each steps for the example of the Chamfer++ matching function.
 
 
 <table>
@@ -286,18 +221,38 @@ The following table provides you the specifications of each dataset.
       <th>ucf101</th>
       <th>mean</th>
       <th>R2+1D</th>
-      <th></th>
-      <th></th>
+      <th>97.6 +- 0.2</th>
+      <th>98.9 +- 0.1</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/download_ucf101_mean_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/inference_ucf101_mean_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/mean/inference_loader_ucf101_mean_5way_1shots_all_seeds.txt">script_from_loader</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
-      <th>diagonal</th>
+      <th>max</th>
       <th>R2+1D</th>
       <th></th>
       <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/max/download_ucf101_max_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/max/inference_ucf101_max_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/max/inference_loader_ucf101_max_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>chamfer++</th>
+      <th>R2+1D</th>
+      <th></th>
+      <th></th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/chamfer++/download_ucf101_chamfer++_5way_all_shots_all_seeds.txt">script_download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/chamfer++/inference_ucf101_chamfer++_5way_1shots_all_seeds.txt">script_inference</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/chamfer++/inference_loader_ucf101_chamfer++_5way_1shots_all_seeds.txt">script_from_loader</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>diagonal</th>
+      <th>R2+1D</th>
+      <th>97.6 +- 0.2</th>
+      <th>99.0 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/download_ucf101_diag_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/inference_ucf101_diag_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/diag/inference_loader_ucf101_diag_5way_1shots_all_seeds.txt">script_from_loader</a></td>
@@ -306,8 +261,8 @@ The following table provides you the specifications of each dataset.
       <th>ucf101</th>
       <th>linear</th>
       <th>R2+1D</th>
-      <th></th>
-      <th></th>
+      <th>97.6 +- 0.1</th>
+      <th>98.9 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/download_ucf101_linear_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/inference_ucf101_linear_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/linear/inference_loader_ucf101_linear_5way_1shots_all_seeds.txt">script_from_loader</a></td>
@@ -316,8 +271,8 @@ The following table provides you the specifications of each dataset.
       <th>ucf101</th>
       <th>otam</th>
       <th>R2+1D</th>
-      <th></th>
-      <th></th>
+      <th>97.8 +- 0.1</th>
+      <th>99.0 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/download_ucf101_otam_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/inference_ucf101_otam_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/otam/inference_loader_ucf101_otam_5way_1shots_all_seeds.txt">script_from_loader</a></td>
@@ -326,8 +281,8 @@ The following table provides you the specifications of each dataset.
       <th>ucf101</th>
       <th>trx</th>
       <th>R2+1D</th>
-      <th></th>
-      <th></th>
+      <th>96.6 +- 0.0</th>
+      <th>99.5 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/download_ucf101_trx_5way_all_shots_all_seeds.txt">script_download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/inference_ucf101_trx_5way_1shots_all_seeds.txt">script_inference</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/ucf101/trx/inference_loader_ucf101_trx_5way_1shots_all_seeds.txt">script_from_loader</a></td>
@@ -335,19 +290,15 @@ The following table provides you the specifications of each dataset.
   </tbody>
 </table>
 
-### Run inference for a pretrained model on the saved episodes
 
-You need to
-* download the pretrained models for multiple seeds (the script does it simultaneously for 1 shot and 5 shots)
-* run the inference script either for 1 shot or 5 shots
+### Download pre-trained models
+To download the pre-trained models for a given matching function, you need to specify:
+* CHECKPOINT_DIR, where the models will be saved
+* MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
+* DATASET (between ssv2/kinetics100/ucf101)
 
-To illustrate the process, you can find below an example using the chamfer++ matching function:
-
-#### Download the pretrained models
+and then run
 ```
-CHECKPOINT_DIR=<your_checkpoint_dir>
-MATCHING_NAME=chamfer++
-DATASET=ssv2
 cd ${CHECKPOINT_DIR}
 for SHOT in 1 5
 do
@@ -358,8 +309,118 @@ do
 done
 ```
 
-#### Inference
+### Download pre-saved test episodes
 
+For reproducibility, we pre-saved the 10k test episodes for the datasets:
+* Something-Something v2, the few-shot split
+* Kinetics-100, the few-shot split
+* UCF101, the few-shot split
+
+You can download them using the following script
+
+```
+ROOT_TEST_EPISODE_DIR=<your_path>
+
+for DATASET in "ssv2" "kinetics100 "ucf101"
+do
+    DATASET_TEST_EPISODE_DIR=${ROOT_TEST_EPISODE_DIR}/${DATASET}
+    mkdir ${DATASET_TEST_EPISODE_DIR}
+    cd ${DATASET_TEST_EPISODE_DIR}
+    
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/${DATASET}_w5_s1.tar.gz
+    tar -xzf ${DATASET}_w5_s1.tar.gz
+    rm -r ${DATASET}_w5_s1.tar.gz
+    
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/${DATASET}_w5_s5.tar.gz
+    tar -xzf ${DATASET}_w5_s5.tar.gz
+    rm -r ${DATASET}_w5_s5.tar.gz
+done
+```
+
+The following table provides you the specifications of each dataset.
+<table>
+  <thead>
+    <tr style="text-align: right;">
+      <th>Dataset</th>
+      <th>Backbone</th>
+      <th>#shot</th>
+      <th>#classes (way) </th>
+      <th>Episode count</th>
+      <th>Episodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ssv2</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s1.tar.gz">kinetics100_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>kinetics100</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s5.tar.gz">kinetics100_w5_s5</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+### Run inference for a pre-trained model on the pre-saved episodes
+
+You first need to
+* download the pre-trained episodes for each dataset
+* download the pre-trained models for multiple seeds 
+
+
+To run inference for a given matching function on pre-saved episodes, you need to specify:
+* ROOT_TEST_EPISODE_DIR
+* CHECKPOINT_DIR 
+* ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
+* MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
+* SHOT (number of example per class between 1/5)
+* DATASET (between ssv2/kinetics100/ucf101)
+
+And then run the script. Each script is different depending on the matching function, so please
+refer to the model zoo to find the one you need. For example, for the Chamfer++ matching function, 
+run:
 ```
 ROOT_TEST_EPISODE_DIR=<your_path>
 CHECKPOINT_DIR=<your_checkpoint_dir>
@@ -397,9 +458,25 @@ done
 python average_multi_seeds.py --result_dir ${CHECKPOINT_DIR} --result_template ${DATASET}_${MATCHING_NAME}_5way_${SHOT}shots_seed --seeds 1 5 10
 ```
 
-### Run inference for a pretrained model on new episodes 
+
+### Run inference for a pre-trained model on any episodes 
+
+You first need to
+* download the pre-trained models for multiple seeds 
 
 
+To run inference for a given matching function on pre-saved episodes, you need to specify:
+* ROOT_FEATURE_DIR
+* CHECKPOINT_DIR 
+* ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
+* MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
+* SHOT (number of example per class between 1/5)
+* DATASET (between ssv2/kinetics100/ucf101)
+* TEST_SEED (the number you like)
+
+And then run the script. Each script is different depending on the matching function, so please
+refer to the model zoo to find the one you need. For example, for the Chamfer++ matching function, 
+run (the changes with the pre-saved episodes are highlighed in bold and italic):
 
 <pre>
 ROOT_FEATURE_DIR=<your_path>
@@ -432,16 +509,18 @@ do
   --way 5  \
   -c ${CHECKPOINT_DIR} \
   -r -m ${MODEL_NAME}\
-  <b>--split_dirs  ${TEST_DIR}</b> \
-  <b>--split_names test </b> \
-  <b>--split_seeds ${TEST_SEED}</b> \
+  <i><B>--split_dirs  ${TEST_DIR}</B></i> \
+  <i><B>--split_names test</B></i> \
+  <i><B>--split_seeds ${TEST_SEED}</B> </i>\
   --dataset_name ${DATASET}
 done
 
 python average_multi_seeds.py --result_dir ${CHECKPOINT_DIR} --result_template ${DATASET}_${MATCHING_NAME}_5way_${SHOT}shots_seed --seeds 1 5 10
 </pre>
 
+
 ## Training the models
+
 
 
 
