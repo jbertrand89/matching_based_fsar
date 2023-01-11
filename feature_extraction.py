@@ -131,7 +131,7 @@ def get_dataset_paths(cmd_args):
     if cmd_args.class_ids is None:
         class_names = os.listdir(input_split_dir)
     else:
-        if cmd_args.dataset in {"kinetics100", "ucf101"}:
+        if cmd_args.dataset in {"kinetics", "ucf101"}:
             all_class_names = np.array(sorted(os.listdir(input_split_dir)))
             class_names = [all_class_names[int(class_id)] for class_id in cmd_args.class_ids]
             # ids = [int(class_id) for class_id in cmd_args.class_ids]
