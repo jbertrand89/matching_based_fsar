@@ -23,4 +23,5 @@ pip install torch torchvision==0.12.0
 pip install tensorboard
 pip install einops
 pip install ffmpeg
+pip install pandas
 ```
