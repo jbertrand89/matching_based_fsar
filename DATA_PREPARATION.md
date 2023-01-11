@@ -24,19 +24,13 @@ do
 done
 ```
 
-## Save features from the classification model
-
-### Download pre-trained classification models
-
-### Train the classification models
-
-### Save the features
+## Extract features from the classification model
 
 To extract the features, you need:
 * pre-trained classification models
 * the directory containing all the frames of the videos extracted
 
-#### Download the pre-trained classification models
+### Download the pre-trained classification models
 First, you need to download the pre-trained models. Run
 ```
 TSL_MODELS_DIR=<your_path>
@@ -46,7 +40,7 @@ wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classif
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_ucf101.pth
 ```
 
-#### Extract the features
+### Extract the features
 You need to specify:
 * ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
 * TSL_MODELS_DIR (as defined before)
@@ -113,99 +107,6 @@ python -u feature_extraction.py \
   </tbody>
 </table>
 
-## Saved test episodes
+## Train the classification models
 
-For reproducibility, we pre-saved the 10k test episodes for the datasets:
-* Something-Something v2, the few-shot split
-* Kinetics-100, the few-shot split
-* UCF101, the few-shot split
-
-
-
-
-You can download them using the following script.
-
-```
-ROOT_TEST_EPISODE_DIR=<your_path>
-
-for DATASET in "ucf101"
-do
-    DATASET_TEST_EPISODE_DIR=${ROOT_TEST_EPISODE_DIR}/${DATASET}
-    mkdir ${DATASET_TEST_EPISODE_DIR}
-    cd ${DATASET_TEST_EPISODE_DIR}
-    
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/${DATASET}_w5_s1.tar.gz
-    tar -xzf ${DATASET}_w5_s1.tar.gz
-    rm -r ${DATASET}_w5_s1.tar.gz
-    
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/${DATASET}/${DATASET}_w5_s5.tar.gz
-    tar -xzf ${DATASET}_w5_s5.tar.gz
-    rm -r ${DATASET}_w5_s5.tar.gz
-done
-```
-
-
-The following table provides you the specifications of each dataset.
-<table>
-  <thead>
-    <tr style="text-align: right;">
-      <th>Dataset</th>
-      <th>Backbone</th>
-      <th>#shot</th>
-      <th>#classes (way) </th>
-      <th>Episode count</th>
-      <th>Episodes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>ssv2</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>ssv2</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
-    </tr>
-    <tr>
-      <th>kinetics</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/features/kinetics_w5_s1.tar.gz">kinetics_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>kinetics</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/features/kinetics_w5_s5.tar.gz">kinetics_w5_s5</a></td>
-    </tr>
-    <tr>
-      <th>ucf101</th>
-      <th>R2+1D</th>
-      <th>1</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
-    </tr>
-    <tr>
-      <th>ucf101</th>
-      <th>R2+1D</th>
-      <th>5</th>
-      <th>5</th>
-      <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/features/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
-    </tr>
-
-  </tbody>
-</table>
+TODO
