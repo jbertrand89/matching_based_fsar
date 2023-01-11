@@ -38,7 +38,7 @@ def main_load_features():
         "validation",
         opt.result_path,
         0,
-        'results.txt'
+        f'results_{opt.manual_seed}_{opt.shot}shots.txt'
     )
     logger.debug(opt)
     print(opt.lr)
@@ -117,11 +117,9 @@ def load_episode_and_format(args, episode_id):
     :return: labels of the target/query examples
     """
     args.test_episode_dir = "/mnt/personal/bertrjul/debug_github/episodes/"
-    args.dataset_name = args.dataset
-    args.way = args.test_way
 
-    saved_episodes_dir = get_saved_episode_dir(args)
-    #args.test_episode_dir, args.dataset_name, f"{args.dataset_name}_w{args.way}_s{args.shot}")
+    saved_episodes_dir = get_saved_episode_dir(
+        args.test_episode_dir, args.dataset, args.test_way, args.shot)
 
     support_features, support_labels, target_features, target_labels = load_episode(
         saved_episodes_dir, episode_id)

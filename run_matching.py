@@ -398,7 +398,8 @@ class Learner:
 
         saved_episodes_dir = None
         if self.args.save_test_episodes or self.args.load_test_episodes:
-            saved_episodes_dir = get_saved_episode_dir(self.args)
+            saved_episodes_dir = get_saved_episode_dir(
+                self.args.test_episode_dir, self.args.dataset_name, self.args.way, self.args.shot)
 
         self.model.eval()
         with torch.no_grad():

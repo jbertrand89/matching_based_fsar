@@ -2,12 +2,17 @@ import os
 import torch
 
 
-def get_saved_episode_dir(args):
+def get_saved_episode_dir(test_episode_dir, dataset_name, way, shot):
     """ Creates the directory containing the saved episodes based on the parameters in args.
+
+    :param test_episode_dir: root directory where to save episodes
+    :param dataset_name: name of the dataset
+    :param way: number of classes
+    :param shot: number of examples per class
     """
 
     saved_episodes_dir = os.path.join(
-        args.test_episode_dir, args.dataset_name, f"{args.dataset_name}_w{args.way}_s{args.shot}")
+        test_episode_dir, dataset_name, f"{dataset_name}_w{way}_s{shot}")
     print(f"10000 episodes in {saved_episodes_dir}")
     os.makedirs(saved_episodes_dir, exist_ok=True)
     return saved_episodes_dir
