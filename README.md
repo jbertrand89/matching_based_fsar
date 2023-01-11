@@ -60,6 +60,17 @@ The following subsections describe each steps for the example of the Chamfer++ m
   <tbody>
     <tr>
       <th>ssv2</th>
+      <th>tsl</th>
+      <th>R2+1D</th>
+      <th>60.6 +- 0.1</th>
+      <th>79.9 +- 0.0</th>
+      <th>N/A</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/classification/ssv2/inference_ssv2_tsl_5way_1shots_all_seeds.txt">from_episodes</a></td>
+      <td>N/A</td>
+      <th>N/A</th>
+    </tr>
+    <tr>
+      <th>ssv2</th>
       <th>mean</th>
       <th>R2+1D</th>
       <th>65.8 +- 0.0</th>
@@ -148,6 +159,17 @@ The following subsections describe each steps for the example of the Chamfer++ m
     </tr>
     <tr>
       <th>kinetics</th>
+      <th>tsl</th>
+      <th>R2+1D</th>
+      <th>93.6 +- 0.0</th>
+      <th>98.0 +- 0.0</th>
+      <th>N/A</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/classification/kinetics/inference_kinetics_tsl_5way_1shots_all_seeds.txt">from_episodes</a></td>
+      <td>N/A</td>
+      <th>N/A</th>
+    </tr>
+    <tr>
+      <th>kinetics</th>
       <th>mean</th>
       <th>R2+1D</th>
       <th>95.5 +- 0.0</th>
@@ -233,6 +255,17 @@ The following subsections describe each steps for the example of the Chamfer++ m
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/visil/inference_kinetics_visil_5way_1shots_all_seeds.txt">from_episodes</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/visil/inference_loader_kinetics_visil_5way_1shots_all_seeds.txt">from_loader</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/visil/train_kinetics_visil_5way_1shots_seed1.txt">train</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>tsl</th>
+      <th>R2+1D</th>
+      <th>97.1 +- 0.0</th>
+      <th>99.4 +- 0.0</th>
+      <th>N/A</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/classification/ucf101/inference_ucf101_tsl_5way_1shots_all_seeds.txt">from_episodes</a></td>
+      <td>N/A</td>
+      <th>N/A</th>
     </tr>
     <tr>
       <th>ucf101</th>
