@@ -33,7 +33,7 @@ done
 ### Save the features
 
 To extract the features, you need:
-* pre-trained classification models 
+* pre-trained classification models
 * the directory containing all the frames of the videos extracted
 
 #### Download the pre-trained classification models
@@ -46,20 +46,23 @@ wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classif
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_ucf101.pth
 ```
 
-#### Download the video frames
-
 #### Extract the features
+You need to specify:
+* ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
+* TSL_MODELS_DIR (as defined before)
+* VIDEO_DIR
+* SPLIT (between train/val/test)
+* DATASET (between ssv2/kinetics/ucf101)
 
 
 ```
-ROOT_FEATURE_DIR=<your_path>
 ROOT_REPO_DIR=<your_repo_dir>
 TSL_MODELS_DIR=<your_path>
 VIDEO_DIR=<your_path>  # input video frames directory
 FEATURE_DIR=<your_path>  # output feature directory
-
 SPLIT=test
-DATASET=kinetics100
+DATASET=kinetics
+
 LOG_DIR=${ROOT_REPO_DIR}/feature_extraction_logs
 mkdir ${LOG_DIR}
 PRETRAIN_DIR=${TSL_MODELS_DIR}/r21d34_pretrained_sports1m_trained_kinetics.pth
@@ -96,10 +99,10 @@ python -u feature_extraction.py \
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ssv2/extract_feature_test.sh">script_test</a></td>
     </tr>
     <tr>
-      <th>kinetics100</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics100/extract_feature_train.sh">script_train</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics100/extract_feature_val.sh">script_val</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics100/extract_feature_test.sh">script_test</a></td>
+      <th>kinetics</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_train.sh">script_train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_val.sh">script_val</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_test.sh">script_test</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -172,20 +175,20 @@ The following table provides you the specifications of each dataset.
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/features/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
     </tr>
     <tr>
-      <th>kinetics100</th>
+      <th>kinetics</th>
       <th>R2+1D</th>
       <th>1</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s1.tar.gz">kinetics100_w5_s1</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/features/kinetics_w5_s1.tar.gz">kinetics_w5_s1</a></td>
     </tr>
     <tr>
-      <th>kinetics100</th>
+      <th>kinetics</th>
       <th>R2+1D</th>
       <th>5</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics100/features/kinetics100_w5_s5.tar.gz">kinetics100_w5_s5</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/features/kinetics_w5_s5.tar.gz">kinetics_w5_s5</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
