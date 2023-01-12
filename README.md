@@ -183,8 +183,8 @@ The following subsections describe each steps for the example of the Chamfer++ m
       <th>kinetics</th>
       <th>max</th>
       <th>R2+1D</th>
-      <th></th>
-      <th></th>
+      <th>95.3 +- 0.1</th>
+      <th>98.3 +- 0.1</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/download_kinetics_max_5way_all_shots_all_seeds.txt">download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/inference_kinetics_max_5way_1shots_all_seeds.txt">from_episodes</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/inference_loader_kinetics_max_5way_1shots_all_seeds.txt">from_loader</a></td>
@@ -372,7 +372,7 @@ for SHOT in 1 5
 do
     for SEED in 1 5 10
     do
-      wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/${DATASET}/${MATCHING_NAME}/${DATASET}_${MATCHING_NAME}_5way_${SHOT}shots_seed${SEED}.pt
+      wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/matching/${DATASET}/${MATCHING_NAME}/${DATASET}_${MATCHING_NAME}_5way_${SHOT}shots_seed${SEED}.pt
     done
 done
 ```
