@@ -1,28 +1,17 @@
 # DATA PREPARATION
 
 In the paper, we provide results for the following datasets:
-* Something-Something v2, the few-shot split  (todo add link)
-* Kinetics-100, the few-shot split  (todo add link)
-* UCF101, the few-shot split (todo add link)
-
-## Download the few-shot splits 
-
-You can follow the 
+* [Something-Something v2](https://developer.qualcomm.com/software/ai-datasets/something-something)
+* [Kinetics](https://www.deepmind.com/open-source/kinetics)
+* [UCF101](https://www.crcv.ucf.edu/data/UCF101.php)
 
 
-```
-ROOT_FEATURE_DIR=<your_path>
-DATASET=ssv2
-DATASET_FEATURE_DIR=${ROOT_FEATURE_DIR}/${DATASET}
-mkdir ${DATASET_FEATURE_DIR}
-cd ${DATASET_FEATURE_DIR}
-for SPLIT in val test train
-do
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/feature_saved/ssv2/${SPLIT}.tar.gz 
-    tar -xzf ${SPLIT}.tar.gz 
-    rm -r ${SPLIT}.tar.gz 
-done
-```
+We use the few-shot splits from 
+[TSL](https://github.com/xianyongqin/few-shot-video-classification/data), to be able to train and
+evaluate the 64-classes classifier in a similar fashion.
+
+
+
 
 ## Extract features from the classification model
 
@@ -107,6 +96,3 @@ python -u feature_extraction.py \
   </tbody>
 </table>
 
-## Train the classification models
-
-TODO
