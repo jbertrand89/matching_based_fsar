@@ -77,21 +77,21 @@ python -u feature_extraction.py \
   <tbody>
     <tr>
       <th>ssv2</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ssv2/extract_feature_train.sh">script_train</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ssv2/extract_feature_val.sh">script_val</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ssv2/extract_feature_test.sh">script_test</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ssv2/extract_feature_train.sh">script_train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ssv2/extract_feature_val.sh">script_val</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ssv2/extract_feature_test.sh">script_test</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_train.sh">script_train</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_val.sh">script_val</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/kinetics/extract_feature_test.sh">script_test</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/kinetics/extract_feature_train.sh">script_train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/kinetics/extract_feature_val.sh">script_val</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/kinetics/extract_feature_test.sh">script_test</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
-            <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ucf101/extract_feature_train.sh">script_train</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ucf101/extract_feature_val.sh">script_val</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/feature_extraction/ucf101/extract_feature_test.sh">script_test</a></td>
+            <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ucf101/extract_feature_train.sh">script_train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ucf101/extract_feature_val.sh">script_val</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/feature_extraction/ucf101/extract_feature_test.sh">script_test</a></td>
     </tr>
   </tbody>
 </table>
