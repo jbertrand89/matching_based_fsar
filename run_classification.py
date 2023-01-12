@@ -16,6 +16,11 @@ from tsl_fsv import weights_init, CLASSIFIER
 from utils import setup_logger, AverageMeter, count_acc, euclidean_metric
 
 
+""" The methods are adapted from 
+https://github.com/xianyongqin/few-shot-video-classification/tsl_fsv r2+1d precomputed episodes.
+"""
+
+
 def parse_command_line():
     """ Parses the command line.
 
@@ -50,9 +55,8 @@ def parse_command_line():
 
 
 def main_classifier_based_from_episodes():
-    """ Runs the classifier-based approach on pre-saved episodes.
-
-    Loads episodes. For each episode, train a new classifier using the support examples, and
+    """ Runs the classifier-based approach on pre-saved episodes. First, loads episodes.
+    For each episode, train a new classifier using the support examples, and
     evaluate the query examples with this classifier.
     """
     main_start_time = time.time()

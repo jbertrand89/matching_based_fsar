@@ -10,7 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 import sys
 path = os.path.abspath('../few-shot-action-recognition')  # include the trx repository
 sys.path.append(path)
-from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy, verify_checkpoint_dir
+from utils import print_and_log, get_log_files, TestAccuracies, aggregate_accuracy
 
 from src.few_shot_models import TRX_few_shot_model, MatchingBasedFewShotModel
 from src.data_loaders.video_feature_reader import VideoFeatureReader
@@ -18,9 +18,13 @@ from src.data_loaders.video_feature_and_frame_name_reader import VideoFeatureAnd
 from src.evaluation.test_episode_io import save_episode, load_episode, get_saved_episode_dir
 
 
-# torch.autograd.set_detect_anomaly(True)
-
 class Learner:
+    """
+    Class for running the meta-training and testing for few-shot action recognition using matching-
+    based methods.
+    This class was first introduced in https://github.com/tobyperrett/few-shot-action-recognition
+    and adapted for r2+1d precomputed features and meta-testing.
+    """
     def __init__(self):
         self.args = self.parse_command_line()
 
@@ -50,7 +54,7 @@ class Learner:
 
         self.init_loaders()
 
-        self.val_accuracies = TestAccuracies([self.args.dataset]) # todo check this
+        self.val_accuracies = TestAccuracies([self.args.dataset])
         self.accuracy_fn = aggregate_accuracy
 
         if not self.args.test_only:
@@ -67,6 +71,7 @@ class Learner:
         self.start_iteration = 0
 
     def init_loaders(self):
+        """ Initializes the data loaders"""
         if not self.args.test_only:
             # train loader
             self.train_video_dataset = VideoFeatureReader(
@@ -106,6 +111,7 @@ class Learner:
                 )
 
     def init_model(self):
+        """ Initializes the model based on the command line parameters"""
         if self.args.method == "trx":
             model = TRX_few_shot_model(self.args)
         elif self.args.method == "matching-based":
@@ -118,6 +124,10 @@ class Learner:
         return model
 
     def parse_command_line(self):
+        """ Parses the command line.
+
+        :return: command line parameters
+        """
         parser = argparse.ArgumentParser()
 
         parser.add_argument("--dataset", type=str, default="data/ssv2small", help="Path to dataset")
@@ -255,6 +265,8 @@ class Learner:
         return args
 
     def run(self):
+        """ Runs the training process
+        """
         train_accuracies = []
         losses = []
         total_iterations = self.args.training_iterations
@@ -338,8 +350,12 @@ class Learner:
         self.logfile.close()
 
     def train_task(self, task_dict):
-        """
-        For one task, runs forward, calculates the loss and accuracy and backprops
+        """ For one task, runs forward, calculates the loss and accuracy and backprops
+
+        :param task_dict: dictionary containing the data from the loader including the support
+          examples (features or images), the support labels and the target examples and labels
+        :return: loss value
+        :return: accuracy value
         """
         task_dict = self.prepare_task(task_dict)
         model_dict = self.model(
@@ -354,6 +370,14 @@ class Learner:
         return task_loss, task_accuracy
 
     def compute_accuracies_from_loaded_episodes(self, saved_episodes_dir, n_episodes):
+        """ Compute the accuracy values for each episode that was pre-saved. For each episode, first
+        loads the episode, then compute the prediction and the accuracy.
+
+        :param saved_episodes_dir: directory where to save the episode if
+          self.args.save_test_episodes is True
+        :param n_episodes: number of episodes
+        :return: list containing the accuracy values for each episode
+        """
         accuracies = []
         for episode_id in range(1, n_episodes + 1):
             support_set, support_labels, target_set, target_labels = load_episode(
@@ -368,6 +392,15 @@ class Learner:
         return accuracies
 
     def compute_accuracies_from_dataloader(self, saved_episodes_dir, n_episodes, mode="val"):
+        """ Compute the accuracy values for each episode using a dataloader. For each episode, first
+        get the episode through the dataloader, then compute the prediction and the accuracy.
+
+        :param saved_episodes_dir: directory where to save the episode if
+          self.args.save_test_episodes is True
+        :param n_episodes: number of episodes
+        :param mode: split used, either val or test
+        :return: list containing the accuracy values for each episode
+        """
         accuracies = []
         iteration = 0
         dataset = self.val_video_dataset if mode == "val" else self.test_video_dataset
@@ -395,7 +428,11 @@ class Learner:
         return accuracies
 
     def evaluate(self, mode="val"):
+        """ Evaluation on the split set (either val or test) and get the accuracy value
 
+        :param mode: split used, either val or test
+        :return: dictionary containing the accuracy value and its confidence
+        """
         saved_episodes_dir = None
         if self.args.save_test_episodes or self.args.load_test_episodes:
             saved_episodes_dir = get_saved_episode_dir(
@@ -428,8 +465,11 @@ class Learner:
         return accuracy_dict
 
     def prepare_task(self, task_dict):
-        """
-        Remove first batch dimension (as we only ever use a batch size of 1) and move data to device.
+        """ Moves data to device.
+
+        :param task_dict: dictionary containing the data from the loader including the support
+          examples (features or images), the support labels and the target examples and labels
+        :return: the dictionary with data on the device
         """
         for k in task_dict.keys():
             if k in {"support_video_names", "target_video_names", "support_temporal_positions",
@@ -439,6 +479,11 @@ class Learner:
         return task_dict
 
     def save_checkpoint(self, iteration, name="checkpoint.pt"):
+        """ Saves the checkpoint files at given iteration.
+
+        :param iteration: iteration number
+        :param name: file name
+        """
         d = {'iteration': iteration,
             'model_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
@@ -448,6 +493,13 @@ class Learner:
         torch.save(d, os.path.join(self.checkpoint_dir, name))
 
     def load_checkpoint(self, name="checkpoint.pt", test_only=False):
+        """ Loads the checkpoint file.
+
+        :param name: file name
+        :param test_only: bool to specify if it is only test in which case we dont need to load the
+          optimizer and the scheduler
+        """
+
         checkpoint_name = os.path.join(self.checkpoint_dir, name)
         print(f"Loading {checkpoint_name}")
         checkpoint = torch.load(checkpoint_name)
@@ -458,7 +510,10 @@ class Learner:
             self.scheduler.load_state_dict(checkpoint['scheduler'])
 
     def run_test(self, mode):
+        """ Runs the evaluation only.
 
+        :param mode: whether it is done on the test set or the validation set
+        """
         if mode == "val":
             n_tasks = self.args.num_val_tasks
         else:
@@ -487,25 +542,22 @@ class Learner:
         item = self.args.dataset
         self.writer.add_scalar('Accuracy/test', accuracy_dict[item]["accuracy"], self.start_iteration)
         self.writer.add_scalar('Confidence/test', accuracy_dict[item]["confidence"], self.start_iteration)
-        # print(f"global_temperature {self.model.global_temperature}")
-        # print(f"temperature_weight {self.model.temperature_weight}")
         logfile_test.close()
 
 
 def main():
+    """ Main process for few-shot action recognition using matching-based methods
+    """
     learner = Learner()
     if learner.args.get_best_val_checkpoint:
-        print(f"get_best_val_checkpoint")
         learner.args.test_model_name = os.path.join(
             learner.args.checkpoint_dir, f"checkpoint_best_val.pt")
         learner.run_test(learner.args.evaluation_mode)
     elif learner.args.test_model_name is not None:
-        print(f"run test")
         learner.args.test_model_name = os.path.join(
             learner.args.checkpoint_dir, learner.args.test_model_name)
         learner.run_test(learner.args.evaluation_mode)
     else:
-        print(f"train")
         learner.run()
 
 
