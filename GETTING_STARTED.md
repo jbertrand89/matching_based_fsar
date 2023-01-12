@@ -12,9 +12,9 @@ You can find below the installation script:
 ```
 ROOT_REPO_DIR=<path_to_the_root_folder>
 cd ${ROOT_REPO_DIR}
-git clone git@github.com:xianyongqin/few-shot-video-classification.git
-git clone git@github.com:tobyperrett/few-shot-action-recognition.git
-git clone git@github.com:jbertrand89/temporal_matching.git
+git clone https://github.com/xianyongqin/few-shot-video-classification.git
+git clone https://github.com/tobyperrett/few-shot-action-recognition.git
+git clone https://github.com/jbertrand89/temporal_matching.git
 cd temporal_matching
 
 python -m venv ENV
