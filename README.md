@@ -425,7 +425,7 @@ The following table provides you the specifications of each dataset.
       <th>1</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ssv2/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -433,7 +433,7 @@ The following table provides you the specifications of each dataset.
       <th>5</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ssv2/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ssv2/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -441,7 +441,7 @@ The following table provides you the specifications of each dataset.
       <th>1</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/kinetics_w5_s1.tar.gz">kinetics_w5_s1</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/kinetics/kinetics_w5_s1.tar.gz">kinetics_w5_s1</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -449,7 +449,7 @@ The following table provides you the specifications of each dataset.
       <th>5</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/kinetics/kinetics_w5_s5.tar.gz">kinetics_w5_s5</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/kinetics/kinetics_w5_s5.tar.gz">kinetics_w5_s5</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -457,7 +457,7 @@ The following table provides you the specifications of each dataset.
       <th>1</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ucf101/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -465,7 +465,7 @@ The following table provides you the specifications of each dataset.
       <th>5</th>
       <th>5</th>
       <th>10000</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_examples/ucf101/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ucf101/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
     </tr>
 
   </tbody>
