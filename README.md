@@ -139,8 +139,8 @@ The following subsections describe each steps for the example of the Chamfer++ m
       <th>ssv2</th>
       <th>trx</th>
       <th>R2+1D</th>
-      <th>65.1 +- 0.2</th>
-      <th>82.0 +- 0.0</th>
+      <th>65.5 +- 0.1</th>
+      <th>81.8 +- 0.2</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/download_ssv2_trx_5way_all_shots_all_seeds.txt">download</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_ssv2_trx_5way_1shots_all_seeds.txt">from_episodes</a></td>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_loader_ssv2_trx_5way_1shots_all_seeds.txt">from_loader</a></td>
