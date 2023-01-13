@@ -135,7 +135,7 @@ class Learner:
         parser.add_argument("--tasks_per_batch", type=int, default=16, help="Number of tasks between parameter optimizations.")
         parser.add_argument("--checkpoint_dir", "-c", default=None, help="Directory to save checkpoint to.")
         parser.add_argument("--test_model_name", "-m", default=None, help="Path to model to load and test.")
-        parser.add_argument("--training_iterations", "-i", type=int, default=60000, help="Number of meta-training iterations.")
+        parser.add_argument("--training_iterations", "-i", type=int, default=0, help="Number of meta-training iterations.")
         parser.add_argument("--resume_from_checkpoint", "-r", dest="resume_from_checkpoint", default=False, action="store_true", help="Restart from latest checkpoint.")
         parser.add_argument("--way", type=int, default=5, help="Way of each task.")
         parser.add_argument("--shot", type=int, default=5, help="Shots per class.")
@@ -247,13 +247,15 @@ class Learner:
         if args.dataset_name == "ssv2":
             args.first_val_iter = 10000
             args.val_iter_freq = 10000
-            args.training_iterations = 150002
+            if args.training_iterations == 0:
+                args.training_iterations = 150002
             args.print_freq = 1000
             args.save_freq = 10000
         else:
             args.first_val_iter = 1000
             args.val_iter_freq = 1000
-            args.training_iterations = 20002
+            if args.training_iterations == 0:
+                args.training_iterations = 20002
             args.print_freq = 100
             args.save_freq = 1000
 
