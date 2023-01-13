@@ -269,6 +269,7 @@ class Learner:
     def run(self):
         """ Runs the training process
         """
+        start_run = time.time()
         train_accuracies = []
         losses = []
         total_iterations = self.args.training_iterations
@@ -350,6 +351,8 @@ class Learner:
         self.val_accuracies.print(self.logfile, accuracy_dict, mode="test")
 
         self.logfile.close()
+        end_run = time.time()
+        print(f"Total train run time {end_run - start_run}s")
 
     def train_task(self, task_dict):
         """ For one task, runs forward, calculates the loss and accuracy and backprops
