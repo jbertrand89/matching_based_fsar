@@ -316,6 +316,10 @@ class Learner:
                 losses = []
                 timings = []
 
+            # save checkpoint
+            if ((iteration + 1) % self.args.save_freq == 0) and (iteration + 1) != total_iterations:
+                self.save_checkpoint(iteration + 1)
+
             # validate
             if (((iteration + 1) in self.args.val_iters) and (
                     iteration + 1) != total_iterations) or iteration == 1:
