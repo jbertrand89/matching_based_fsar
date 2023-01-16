@@ -5,12 +5,29 @@ In the paper, we provide results for the following datasets:
 * [Kinetics](https://www.deepmind.com/open-source/kinetics)
 * [UCF101](https://www.crcv.ucf.edu/data/UCF101.php)
 
-
+## Few-shot splits
 We use the few-shot splits from 
 [TSL](https://github.com/xianyongqin/few-shot-video-classification/data), to be able to train and
 evaluate the 64-classes classifier in a similar fashion.
 
+Because the kinetics dataset may change over time (videos are continually removed from 
+youtube/marked as private), I also saved the few-shot split. You can download it using the following 
+script:
 
+```
+FEW_SHOT_DIR=<your_path>
+DATASET=kinetics
+FEW_SHOT_DIR/${DATASET}
+mkdir ${FEW_SHOT_DIR}
+cd ${FEW_SHOT_DIR}
+
+for SPLIT in train val test classification_val
+do
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/few_shot_splits/kinetics/${SPLIT}.tar.gz
+    tar -xzf ${SPLIT}.tar.gz
+    rm -r ${SPLIT}.tar.gz
+done
+```
 
 
 ## Extract features from the classification model
