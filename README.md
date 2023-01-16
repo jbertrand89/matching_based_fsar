@@ -384,6 +384,17 @@ For reproducibility, we pre-saved the 10k test episodes for the datasets:
 * Kinetics-100, the few-shot split
 * UCF101, the few-shot split
 
+Each episode contains:
+* support features, a tensor containing the R(2+1)D features of the support examples
+* support labels, a tensor containing the labels of the support examples
+* query features, a tensor containing the R(2+1)D features of the query examples
+* query labels, a tensor containing the labels of the query examples
+
+In addition, we also provide
+* the support frame names, a list of the frame paths to compute each support clip
+* the query frame names, a list of the frame paths to compute each query clip
+which will help to compare fairly between different methods with different backbone.
+
 You can download them using the following script
 
 ```
@@ -528,7 +539,7 @@ python average_multi_seeds.py --result_dir ${CHECKPOINT_DIR} --result_template $
 ```
 
 
-### Run inference for a pre-trained model on any episodes 
+### Run inference for a pre-trained model, general use-case
 
 You first need to
 * download the test pre-saved features (see section training)
