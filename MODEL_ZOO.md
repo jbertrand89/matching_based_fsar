@@ -19,6 +19,9 @@ The following Table recaps all the scripts to
 * run inference, general case
 * training
 
+<details>
+  <summary> <b> Table </b> </summary>
+
 <table>
   <thead>
     <tr style="text-align: right;">
@@ -333,6 +336,7 @@ The following Table recaps all the scripts to
     </tr>
   </tbody>
 </table>
+</details>
 
 Please refer to sections
 [Inference](https://github.com/jbertrand89/temporal_matching#inference) 

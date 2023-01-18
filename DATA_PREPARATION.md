@@ -14,6 +14,9 @@ Because the kinetics dataset may change over time (videos are continually remove
 youtube/marked as private), I also saved the few-shot split. You can download it using the following 
 script:
 
+<details>
+  <summary> <b> Code </b> </summary>
+
 ```
 FEW_SHOT_DIR=<your_path>
 DATASET=kinetics
@@ -28,6 +31,7 @@ do
     rm -r ${SPLIT}.tar.gz
 done
 ```
+</details>
 
 
 ## R(2+1)D feature extractor
@@ -47,6 +51,9 @@ To extract the features, you need:
 
 ### Download the pre-trained classification models
 First, download the pre-trained models by running
+<details>
+  <summary> <b> Code </b> </summary>
+
 ```
 TSL_MODELS_DIR=<your_path>
 
@@ -54,6 +61,8 @@ wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classif
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_ssv2_no_hf.pth
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_ucf101.pth
 ```
+</details>
+
 
 ### Extract the features
 You need to specify:
@@ -63,6 +72,8 @@ You need to specify:
 * SPLIT (between train/val/test)
 * DATASET (between ssv2/kinetics/ucf101)
 
+<details>
+  <summary> <b> Code </b> </summary>
 
 ```
 ROOT_REPO_DIR=<your_repo_dir>
@@ -91,6 +102,12 @@ python -u feature_extraction.py \
 --n_threads 16 \
 --r2plus1d_n_classes_pretrain 64 
 ```
+</details>
+
+The following table recaps the scripts for corresponding to each few-shot split and each dataset.
+<details>
+  <summary> <b> Table </b> </summary>
+
 <table>
   <thead>
     <tr style="text-align: right;">
@@ -121,4 +138,4 @@ python -u feature_extraction.py \
     </tr>
   </tbody>
 </table>
-
+</details>
