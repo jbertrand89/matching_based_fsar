@@ -30,14 +30,23 @@ done
 ```
 
 
-## Extract features from the classification model
+## R(2+1)D feature extractor
 
+To compare fairly classifier-based and matching-based approaches, we start from frozen R(2+1)D 
+features. We extract the features for each 16-frames clip at each temporal position in the video.
+Clips are spatially augmented during feature extraction for the train split only:
+  * a random cropping is applied to every frame of a clip, 
+  * random horizontal flipping is applied for Kinetics and UCF101 datasets. 
+
+For the val and test splits, no spatial augmentation (no crop and no random horizontal flipping)
+are applied during feature extraction.
+  
 To extract the features, you need:
 * pre-trained classification models
 * the directory containing all the frames of the videos extracted
 
 ### Download the pre-trained classification models
-First, you need to download the pre-trained models. Run
+First, download the pre-trained models by running
 ```
 TSL_MODELS_DIR=<your_path>
 
@@ -49,7 +58,7 @@ wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classif
 ### Extract the features
 You need to specify:
 * ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
-* TSL_MODELS_DIR (as defined before)
+* TSL_MODELS_DIR (as defined in [Download the pre-trained classification models](#download-the-pre-trained-classification-models))
 * VIDEO_DIR
 * SPLIT (between train/val/test)
 * DATASET (between ssv2/kinetics/ucf101)
