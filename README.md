@@ -6,6 +6,26 @@ Juliette Bertrand, Yannis Kalantidis, Giorgos Tolias
 
 This repository contains official code for the above-mentioned publication.
 
+## What do we have here?
+
+1. [Installation](#installation)
+
+2. [Data preparation](#data-preparation)
+
+3. [Model zoo](#model-zoo)
+
+4. [Inference](#inference)
+   1. [Download models](#download-models)
+   2. [Download test episodes](#download-test-episodes)
+   3. [Inference on the pre-saved episodes](#inference-on-the-pre-saved-episodes)
+   4. [Inference, general use-case](#inference-general-use-case)
+
+5. [Training](#training)
+   1. [Download pre-saved features](#download-pre-saved-featuresw)
+   2. [Train a model](#train-a-model)
+
+6. [Citation](#citation)
+
 
 ## Installation
 
@@ -17,9 +37,9 @@ Please follow the steps described in [GETTING_STARTED](https://github.com/jbertr
 For more details on the datasets, please refer to [DATA_PREPARATION](https://github.com/jbertrand89/temporal_matching/blob/main/DATA_PREPARATION.md).
 
 
-## Inference
+## Model zoo
 
-We saved the pretrained models presented in the paper:
+We saved the pretrained models evaluated in the paper:
 * our method: Chamfer++
 * prior works:
   * [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) (TSL)
@@ -32,16 +52,11 @@ We saved the pretrained models presented in the paper:
   * diagonal
   * linear
 
-
-### Model zoo
-
 The following Table recaps all the scripts to 
 * download models
-* run inference on the pre-saved episodes 
-* run inference using the dataloader. 
-
-The following subsections describe each steps for the example of the Chamfer++ matching.
-
+* run inference on pre-saved episodes 
+* run inference, general case
+* training
 
 <table>
   <thead>
@@ -52,9 +67,9 @@ The following subsections describe each steps for the example of the Chamfer++ m
       <th>Accuracy 1-shot</th>
       <th>Accuracy 5-shots</th>
       <th>Download models</th>
-      <th>Inference from saved episodes</th>
-      <th>Inference from dataloader</th>
-      <th>Train</th>
+      <th>Inference on saved episodes</th>
+      <th>Inference, general case</th>
+      <th>Training</th>
     </tr>
   </thead>
   <tbody>
@@ -358,8 +373,11 @@ The following subsections describe each steps for the example of the Chamfer++ m
   </tbody>
 </table>
 
+The following sections details each step.
 
-### Download pre-trained models
+## Inference
+
+### Download models
 To download the pre-trained models for a given matching function, you need to specify:
 * CHECKPOINT_DIR, where the models will be saved
 * MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
@@ -377,9 +395,13 @@ do
 done
 ```
 
-### Download pre-saved test episodes
+Note that the classifier-based approach doesn't use additional models, and train a new classifier 
+for each test episode.
 
-For reproducibility, we pre-saved the 10k test episodes for the datasets:
+### Download test episodes
+
+For reproducibility, we pre-saved the 10k test episodes that were used in the paper, for each of the
+following datasets:
 * Something-Something v2, the few-shot split
 * Kinetics-100, the few-shot split
 * UCF101, the few-shot split
@@ -483,23 +505,23 @@ The following table provides you the specifications of each dataset.
 </table>
 
 
-### Run inference for a pre-trained model on the pre-saved episodes
+### Inference on the pre-saved episodes
 
-You first need to
-* download the pre-trained episodes for each dataset
-* download the pre-trained models for multiple seeds 
+To reproduce the paper numbers, you first need to
+* [download the test episodes for each dataset](#download-test-episodes)
+* [download the pre-trained models for multiple seeds](#download-models)
 
 
 To run inference for a given matching function on pre-saved episodes, you need to specify:
-* ROOT_TEST_EPISODE_DIR
-* CHECKPOINT_DIR 
+* ROOT_TEST_EPISODE_DIR (as defined in [Download test episodes](#download-test-episodes))
+* CHECKPOINT_DIR (as defined in [Download models](#download-models))
 * ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
 * MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
 * SHOT (number of example per class between 1/5)
 * DATASET (between ssv2/kinetics/ucf101)
 
 And then run the script. Each script is different depending on the matching function, so please
-refer to the model zoo to find the one you need. For example, with Chamfer++ matching, 
+refer to the model zoo to find the one you need. For example, with Chamfer++ matching 
 run
 ```
 ROOT_TEST_EPISODE_DIR=<your_path>
@@ -539,16 +561,19 @@ python average_multi_seeds.py --result_dir ${CHECKPOINT_DIR} --result_template $
 ```
 
 
-### Run inference for a pre-trained model, general use-case
+### Inference, general use-case
+
+You may want to run inference on a new set of episodes. We provide a script to use the 
+R(2+1)D feature loader.
 
 You first need to
-* download the test pre-saved features (see section training)
-* download the pre-trained models for multiple seeds 
+* [download the test pre-saved features](#download-pre-saved-features)
+* [download the pre-trained models for multiple seeds](#download-models)
 
 
 To run inference for a given matching function on pre-saved episodes, you need to specify:
-* ROOT_FEATURE_DIR
-* CHECKPOINT_DIR 
+* ROOT_FEATURE_DIR (as defined in [Download pre-saved features](#download-pre-saved-features))
+* CHECKPOINT_DIR (as defined in [Download models](#download-models))
 * ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
 * MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
 * SHOT (number of example per class between 1/5)
@@ -600,11 +625,24 @@ python average_multi_seeds.py --result_dir ${CHECKPOINT_DIR} --result_template $
 ```
 
 
-## Training the models
+## Training
 
-### Download the pre-saved features
+To compare fairly classifier-based and matching-based approaches, we start from frozen R(2+1)D 
+features trained following the first stage of 
+[TSL](https://arxiv.org/pdf/2007.04755.pdf), as described in 
+[DATA_PREPARATION](https://github.com/jbertrand89/temporal_matching/blob/main/DATA_PREPARATION.md).
 
-You need to specify:
+To train a new model, you need to
+* download pre-saved features 
+* run training
+
+
+### Download pre-saved features
+
+We extracted features for the train, test and val few-shot splits and saved them for 
+reproducibility.
+
+To download them, you need to specify:
 * ROOT_FEATURE_DIR, root directory where to save the features
 * DATASET (between ssv2/kinetics/ucf101)
 
@@ -627,8 +665,8 @@ done
 ### Train a model
 
 To run inference for a given matching function on pre-saved episodes, you need to specify:
-* CHECKPOINT_DIR
-* ROOT_FEATURE_DIR 
+* CHECKPOINT_DIR (can be different from the one defined in [Download models](#download-models))
+* ROOT_FEATURE_DIR (as defined in [Download pre-saved features](#download-pre-saved-features))
 * ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
 * MATCHING_NAME (between diag/mean/max/linear/otam/chamfer++/trx/visil)
 * DATASET (between ssv2/kinetics/ucf101)
@@ -699,5 +737,8 @@ python run_matching.py \
 --clip_tuple_length 3
 ```
 
+## Citation
+
+todo
 
 
