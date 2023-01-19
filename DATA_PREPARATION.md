@@ -5,24 +5,27 @@ In the paper, we provide results for the following datasets:
 * [Kinetics](https://www.deepmind.com/open-source/kinetics)
 * [UCF101](https://www.crcv.ucf.edu/data/UCF101.php)
 
-## Few-shot splits
-We use the few-shot splits from 
+## Few-shot datasets
+
+First you need to download the videos and extract the video frames.
+We use the few-shot splits (train/val/test) from 
 [TSL](https://github.com/xianyongqin/few-shot-video-classification/data), to be able to train and
 evaluate the 64-classes classifier in a similar fashion.
 
 Because the kinetics dataset may change over time (videos are continually removed from 
-youtube/marked as private), I also saved the few-shot split. You can download it using the following 
-script:
+youtube/marked as private), I saved the video frames extracted. You can download it using the 
+following script:
 
 <details>
   <summary> <b> Code </b> </summary>
 
 ```
-FEW_SHOT_DIR=<your_path>
+VIDEO_FRAMES_DIR=<your_path>
+mkdir ${VIDEO_FRAMES_DIR}
 DATASET=kinetics
-FEW_SHOT_DIR/${DATASET}
-mkdir ${FEW_SHOT_DIR}
-cd ${FEW_SHOT_DIR}
+VIDEO_FRAMES_DATASET_DIR=${VIDEO_FRAMES_DIR}/${DATASET}
+mkdir ${VIDEO_FRAMES_DATASET_DIR}
+cd ${VIDEO_FRAMES_DATASET_DIR}
 
 for SPLIT in train val test classification_val
 do
@@ -34,7 +37,7 @@ done
 </details>
 
 
-## R(2+1)D feature extractor
+## R(2+1)D features
 
 To compare fairly classifier-based and matching-based approaches, we start from frozen R(2+1)D 
 features. We extract the features for each 16-frames clip at each temporal position in the video.
@@ -46,16 +49,18 @@ For the val and test splits, no spatial augmentation (no crop and no random hori
 are applied during feature extraction.
   
 To extract the features, you need:
-* pre-trained classification models
-* the directory containing all the frames of the videos extracted
+* pre-trained [feature models](#download-the-feature-models) 
+* the directory containing all the video frames, as defined in [Few-shot-datasets](#few-shot-datasets) 
 
-### Download the pre-trained classification models
+### Download the feature models
 First, download the pre-trained models by running
 <details>
   <summary> <b> Code </b> </summary>
 
 ```
-TSL_MODELS_DIR=<your_path>
+FEATURE_MODELS_DIR=<your_path>
+mkdir ${FEATURE_MODELS_DIR}
+cd ${FEATURE_MODELS_DIR}
 
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_kinetics.pth
 wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classification_pretraining/r21d34_pretrained_sports1m_trained_ssv2_no_hf.pth
@@ -64,11 +69,11 @@ wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/models/classif
 </details>
 
 
-### Extract the features
+### Feature extraction
 You need to specify:
-* ROOT_REPO_DIR (as defined in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md))
-* TSL_MODELS_DIR (as defined in [Download the pre-trained classification models](#download-the-pre-trained-classification-models))
-* VIDEO_DIR
+* ROOT_REPO_DIR (as defined in [Installation](https://github.com/jbertrand89/temporal_matching/#installation))
+* FEATURE_MODELS_DIR (as defined in [Download the feature models](#download-the-feature-models))
+* VIDEO_FRAMES_DIR (as defined in [Few-shot-datasets](#few-shot-datasets) )
 * SPLIT (between train/val/test)
 * DATASET (between ssv2/kinetics/ucf101)
 
@@ -77,28 +82,31 @@ You need to specify:
 
 ```
 ROOT_REPO_DIR=<your_repo_dir>
-TSL_MODELS_DIR=<your_path>
-VIDEO_DIR=<your_path>  # input video frames directory
+FEATURE_MODELS_DIR=<your_path>
+VIDEO_FRAMES_DIR=<your_path>  # input video frames directory
 FEATURE_DIR=<your_path>  # output feature directory
 SPLIT=test
 DATASET=kinetics
 
+VIDEO_FRAMES_DATASET_DIR=${VIDEO_FRAMES_DIR}/${DATASET}
+FEATURE_DATASET_DIR=${FEATURE_DIR}/${DATASET}
+mkdir ${FEATURE_DATASET_DIR}
 LOG_DIR=${ROOT_REPO_DIR}/feature_extraction_logs
 mkdir ${LOG_DIR}
-PRETRAIN_DIR=${TSL_MODELS_DIR}/r21d34_pretrained_sports1m_trained_kinetics.pth
+PRETRAIN_FILENAME=${FEATURE_MODELS_DIR}/r21d34_pretrained_sports1m_trained_kinetics.pth
 
 TEMPORAL_MATCHING_REPO_DIR=${ROOT_REPO_DIR}/temporal_matching
 cd ${TEMPORAL_MATCHING_REPO_DIR}
 source ENV/bin/activate
 
 python -u feature_extraction.py \
---input_dataset_dir ${VIDEO_DIR} \
---output_dataset_dir ${FEATURE_DIR} \
+--input_dataset_dir ${VIDEO_FRAMES_DATASET_DIR} \
+--output_dataset_dir ${FEATURE_DATASET_DIR} \
 --log_dir ${LOG_DIR} \
 --dataset ${DATASET} \
 --split ${SPLIT} \
 --manual_seed 5 \
---pretrain_path ${PRETRAIN_DIR} \
+--pretrain_path ${PRETRAIN_FILENAME} \
 --n_threads 16 \
 --r2plus1d_n_classes_pretrain 64 
 ```
@@ -139,3 +147,4 @@ The following table recaps the scripts for corresponding to each few-shot split 
   </tbody>
 </table>
 </details>
+
