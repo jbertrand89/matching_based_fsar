@@ -1,7 +1,5 @@
 # Rethinking matching-based few-shot action recognition
 
-Juliette Bertrand, Yannis Kalantidis, Giorgos Tolias
-
 [[arXiv]()] [[project page](https://jbertrand89.github.io/temporal_matching_project_page/)]
 
 This repository contains official code for the above-mentioned publication.
