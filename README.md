@@ -29,7 +29,37 @@ This repository contains official code for the above-mentioned publication.
 
 ## Installation
 
-Please follow the steps described in [GETTING_STARTED](https://github.com/jbertrand89/temporal_matching/blob/main/GETTING_STARTED.md).
+This code is based on the 
+[TSL](https://github.com/xianyongqin/few-shot-video-classification) [1] and 
+[TRX](https://github.com/tobyperrett/few-shot-action-recognition) [2] repositories. 
+It requires Python >= 3.8
+
+You can find below the installation script:
+
+<details>
+  <summary> <b> Code </b> </summary>
+
+```
+ROOT_REPO_DIR=<path_to_the_root_folder>
+cd ${ROOT_REPO_DIR}
+git clone https://github.com/xianyongqin/few-shot-video-classification.git
+git clone https://github.com/tobyperrett/few-shot-action-recognition.git
+git clone https://github.com/jbertrand89/temporal_matching.git
+cd temporal_matching
+
+python -m venv ENV
+source ENV/bin/activate
+pip install torch torchvision==0.12.0
+pip install tensorboard
+pip install einops
+pip install ffmpeg
+pip install pandas
+```
+</details>
+
+[1] Xian et al. [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) 
+
+[2] Perrett et al. [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184)
 
 
 ## Data preparation
