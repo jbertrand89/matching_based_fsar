@@ -148,3 +148,115 @@ The following table recaps the scripts for corresponding to each few-shot split 
 </table>
 </details>
 
+
+## Test episodes
+
+For reproducibility, we pre-saved the 10k test episodes that were used in the paper, for each of the
+three datasets. 
+
+Each episode contains:
+* support features, a tensor containing the R(2+1)D features of the support examples
+* support labels, a tensor containing the labels of the support examples
+* support frame names, a list of the frame paths to compute each support clip
+* query features, a tensor containing the R(2+1)D features of the query examples
+* query labels, a tensor containing the labels of the query examples
+* query frame names, a list of the frame paths to compute each query clip
+
+To compute features for a different backbone, you can start from the support and query frame names. 
+This will enable to fairly compare between different methods using different backbones.
+
+You can download the test episodes using the following script
+
+<details>
+  <summary> <b> Code </b> </summary>
+
+```
+ROOT_TEST_EPISODE_DIR=<your_path>
+mkdir ${ROOT_TEST_EPISODE_DIR}
+cd ${ROOT_TEST_EPISODE_DIR}
+
+for DATASET in ssv2 kinetics ucf101
+do
+    DATASET_TEST_EPISODE_DIR=${ROOT_TEST_EPISODE_DIR}/${DATASET}
+    mkdir ${DATASET_TEST_EPISODE_DIR}
+    cd ${DATASET_TEST_EPISODE_DIR}
+    
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/${DATASET}/${DATASET}_w5_s1.tar.gz
+    tar -xzf ${DATASET}_w5_s1.tar.gz
+    rm -r ${DATASET}_w5_s1.tar.gz
+    
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/${DATASET}/${DATASET}_w5_s5.tar.gz
+    tar -xzf ${DATASET}_w5_s5.tar.gz
+    rm -r ${DATASET}_w5_s5.tar.gz
+done
+```
+</details>
+
+The following table provides you the specifications of each dataset.
+<details>
+  <summary> <b> Table </b> </summary>
+
+<table>
+  <thead>
+    <tr style="text-align: right;">
+      <th>Dataset</th>
+      <th>Backbone</th>
+      <th>#shot</th>
+      <th>#classes (way) </th>
+      <th>Episode count</th>
+      <th>Episodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ssv2</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ssv2/ssv2_w5_s1.tar.gz">ssv2_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>ssv2</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ssv2/ssv2_w5_s5.tar.gz">ssv2_w5_s5</a></td>
+    </tr>
+    <tr>
+      <th>kinetics</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/kinetics/kinetics_w5_s1.tar.gz">kinetics_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>kinetics</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/kinetics/kinetics_w5_s5.tar.gz">kinetics_w5_s5</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>R2+1D</th>
+      <th>1</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ucf101/ucf101_w5_s1.tar.gz">ucf101_w5_s1</a></td>
+    </tr>
+    <tr>
+      <th>ucf101</th>
+      <th>R2+1D</th>
+      <th>5</th>
+      <th>5</th>
+      <th>10000</th>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/test_episodes/ucf101/ucf101_w5_s5.tar.gz">ucf101_w5_s5</a></td>
+    </tr>
+
+  </tbody>
+</table>
+</details>
