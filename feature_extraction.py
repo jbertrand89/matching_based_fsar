@@ -236,6 +236,7 @@ def extract_video_features(video_dir, output_dir, spatial_transform, clip_length
     # Save the features
     feature_filename = os.path.join(output_dir, "video_features.pth")
     torch.save(features, feature_filename)
+    print(f"Saved features in {output_dir}")
 
 
 def save_logs(cmd_args, processed):
