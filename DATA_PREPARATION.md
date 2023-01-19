@@ -149,6 +149,35 @@ The following table recaps the scripts for corresponding to each few-shot split 
 </details>
 
 
+### Download pre-saved features
+
+For reproducibility, I saved features for the train, test and val few-shot splits.
+
+To download them, you need to specify:
+* ROOT_FEATURE_DIR, root directory where to save the features
+* DATASET (between ssv2/kinetics/ucf101)
+
+<details>
+  <summary> <b> Code </b> </summary>
+
+```
+ROOT_FEATURE_DIR=<your_path>
+DATASET=ssv2
+
+FEATURE_DATASET_DIR=${ROOT_FEATURE_DIR}/${DATASET}
+mkdir ${FEATURE_DATASET_DIR}
+cd ${FEATURE_DATASET_DIR}
+
+for SPLIT in val test train
+do
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/feature_saved/ssv2/${SPLIT}.tar.gz 
+    tar -xzf ${SPLIT}.tar.gz 
+    rm -r ${SPLIT}.tar.gz 
+done
+```
+</details>
+
+
 ## Test episodes
 
 For reproducibility, we pre-saved the 10k test episodes that were used in the paper, for each of the
