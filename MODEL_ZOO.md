@@ -16,9 +16,6 @@ We saved the pretrained models evaluated in the paper:
 The following Table recaps the results and scripts for downloading the matching models. 
 There is one model per seed (1/5/10).
 
-<details>
-  <summary> <b> Table </b> </summary>
-
 <table>
   <thead>
     <tr style="text-align: right;">
@@ -249,7 +246,6 @@ There is one model per seed (1/5/10).
     </tr>
   </tbody>
 </table>
-</details>
 
 To download the pre-trained models for a given matching function, you need to specify:
 * CHECKPOINT_DIR, where the models will be saved
