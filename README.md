@@ -2,7 +2,8 @@
 
 [[arXiv]()] [[project page](https://jbertrand89.github.io/temporal_matching_project_page/)]
 
-This repository contains official code for the above-mentioned publication.
+This repository contains official code for our paper 
+[Rethinking matching-based few-shot action recognition](https://jbertrand89.github.io/temporal_matching_project_page/).
 
 ## What do we have here?
 
@@ -26,8 +27,8 @@ This repository contains official code for the above-mentioned publication.
 ## Installation
 
 This code is based on the 
-[TSL](https://github.com/xianyongqin/few-shot-video-classification) [1] and 
-[TRX](https://github.com/tobyperrett/few-shot-action-recognition) [2] repositories. 
+[TSL](https://github.com/xianyongqin/few-shot-video-classification) [[1] ](#references) and 
+[TRX](https://github.com/tobyperrett/few-shot-action-recognition) [[2] ](#references) repositories. 
 It requires Python >= 3.8
 
 You can find below the installation script:
@@ -53,9 +54,6 @@ pip install pandas
 ```
 </details>
 
-[1] Xian et al. [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) 
-
-[2] Perrett et al. [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184)
 
 
 ## Data preparation
@@ -291,11 +289,11 @@ python run_matching.py \
 
 The following Table recaps the scripts for evaluating and training the following models:
 * our method: Chamfer++
-* prior works:
-  * [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) (TSL)
-  * [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184) (TRX)
-  * [Few-Shot Video Classification via Temporal Alignment](https://arxiv.org/abs/1906.11415) (TSL)
-  * [ViSiL: Fine-grained Spatio-Temporal Video Similarity Learning](https://arxiv.org/abs/1908.07410) (ViSiL) adapted for few-shot-action-recognition
+* prior work:
+  * TSL [[1] ](#references)
+  * TRX [[2] ](#references)
+  * OTAM [[3] ](#references)
+  * ViSiL [[4] ](#references) adapted for few-shot-action-recognition
 * useful baselines:
   * mean
   * max
@@ -374,9 +372,18 @@ The following Table recaps the scripts for evaluating and training the following
 </details>
 
 
-
 ## Citation
 
-todo
+Coming soon.
+
+## References
+
+[1] Xian et al. [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) 
+
+[2] Perrett et al. [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184)
+
+[3] Cao et al. [Few-Shot Video Classification via Temporal Alignment](https://arxiv.org/abs/1906.11415)
+
+[4] Kordopatis-Zilos et al. [ViSiL: Fine-grained Spatio-Temporal Video Similarity Learning](https://arxiv.org/abs/1908.07410)
 
 
