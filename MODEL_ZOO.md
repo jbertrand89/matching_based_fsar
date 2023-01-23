@@ -2,11 +2,11 @@
 
 We saved the pretrained models evaluated in the paper:
 * our method: Chamfer++
-* prior works:
-  * [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) (TSL)
-  * [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184) (TRX)
-  * [Few-Shot Video Classification via Temporal Alignment](https://arxiv.org/abs/1906.11415) (TSL)
-  * [ViSiL: Fine-grained Spatio-Temporal Video Similarity Learning](https://arxiv.org/abs/1908.07410) (ViSiL) adapted for few-shot-action-recognition
+* prior work:
+  * TSL [[1] ](#references)
+  * TRX [[2] ](#references)
+  * OTAM [[3] ](#references)
+  * ViSiL [[4] ](#references) adapted for few-shot-action-recognition
 * useful baselines:
   * mean
   * max
@@ -271,3 +271,15 @@ done
 
 Note that the classifier-based approach doesn't use matching models, and train a new classifier 
 for each test episode.
+
+
+### References
+
+[1] Xian et al. [Generalized Few-Shot Video Classification with Video Retrieval and Feature Generation](https://arxiv.org/pdf/2007.04755.pdf) 
+
+[2] Perrett et al. [Temporal-Relational CrossTransformers for Few-Shot Action Recognition](https://arxiv.org/abs/2101.06184)
+
+[3] Cao et al. [Few-Shot Video Classification via Temporal Alignment](https://arxiv.org/abs/1906.11415)
+
+[4] Kordopatis-Zilos et al. [ViSiL: Fine-grained Spatio-Temporal Video Similarity Learning](https://arxiv.org/abs/1908.07410)
+
