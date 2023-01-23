@@ -42,7 +42,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>65.8 +- 0.0</th>
       <th>79.1 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/download_ssv2_mean_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/download_ssv2_mean_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -50,7 +50,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>65.0 +- 0.2</th>
       <th>79.0 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/download_ssv2_max_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/download_ssv2_max_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -58,7 +58,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>67.8 +- 0.2</th>
       <th>81.6 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/download_ssv2_chamfer++_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/download_ssv2_chamfer++_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -66,7 +66,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>66.7 +- 0.1</th>
       <th>80.1 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/download_ssv2_diag_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/download_ssv2_diag_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -74,7 +74,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>66.6 +- 0.1</th>
       <th>80.1 +- 0.2</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/download_ssv2_linear_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/download_ssv2_linear_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -82,7 +82,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>67.1 +- 0.0</th>
       <th>80.2 +- 0.2</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/download_ssv2_otam_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/download_ssv2_otam_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -90,7 +90,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>65.5 +- 0.1</th>
       <th>81.8 +- 0.2</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/download_ssv2_trx_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/download_ssv2_trx_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ssv2</th>
@@ -98,7 +98,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>67.7 +- 0.0</th>
       <th>81.3 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/download_ssv2_visil_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/download_ssv2_visil_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -114,7 +114,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.5 +- 0.0</th>
       <th>98.1 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/mean/download_kinetics_mean_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/mean/download_kinetics_mean_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -122,7 +122,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.3 +- 0.1</th>
       <th>98.3 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/download_kinetics_max_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/download_kinetics_max_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -130,7 +130,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>96.1 +- 0.1</th>
       <th>98.3 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/chamfer++/download_kinetics_chamfer++_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/chamfer++/download_kinetics_chamfer++_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -138,7 +138,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.3 +- 0.1</th>
       <th>98.1 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/diag/download_kinetics_diag_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/diag/download_kinetics_diag_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -146,7 +146,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.5 +- 0.1</th>
       <th>98.1 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/linear/download_kinetics_linear_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/linear/download_kinetics_linear_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -154,7 +154,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.9 +- 0.0</th>
       <th>98.4 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/otam/download_kinetics_otam_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/otam/download_kinetics_otam_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -162,7 +162,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>93.4 +- 0.2</th>
       <th>97.5 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/trx/download_kinetics_trx_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/trx/download_kinetics_trx_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>kinetics</th>
@@ -170,7 +170,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>95.9 +- 0.0</th>
       <th>98.2 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/visil/download_kinetics_visil_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/visil/download_kinetics_visil_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -186,7 +186,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.6 +- 0.2</th>
       <th>98.9 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/mean/download_ucf101_mean_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/mean/download_ucf101_mean_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -194,7 +194,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.9 +- 0.1</th>
       <th>98.9 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/max/download_ucf101_max_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/max/download_ucf101_max_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -202,7 +202,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.7 +- 0.0</th>
       <th>99.3 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/chamfer++/download_ucf101_chamfer++_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/chamfer++/download_ucf101_chamfer++_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -210,7 +210,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.6 +- 0.2</th>
       <th>99.0 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/diag/download_ucf101_diag_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/diag/download_ucf101_diag_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -218,7 +218,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.6 +- 0.1</th>
       <th>98.9 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/linear/download_ucf101_linear_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/linear/download_ucf101_linear_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -226,7 +226,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.8 +- 0.1</th>
       <th>99.0 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/otam/download_ucf101_otam_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/otam/download_ucf101_otam_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -234,7 +234,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>96.6 +- 0.0</th>
       <th>99.5 +- 0.0</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/trx/download_ucf101_trx_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/trx/download_ucf101_trx_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
       <th>ucf101</th>
@@ -242,7 +242,7 @@ There is one model per seed (1/5/10).
       <th>R2+1D</th>
       <th>97.8 +- 0.2</th>
       <th>99.0 +- 0.1</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/visil/download_ucf101_visil_5way_all_shots_all_seeds.txt">download</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ucf101/visil/download_ucf101_visil_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
   </tbody>
 </table>
