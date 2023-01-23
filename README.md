@@ -315,57 +315,57 @@ The following Table recaps the scripts for evaluating and training the following
   <tbody>
     <tr>
       <th>tsl</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/classification/ssv2/inference_ssv2_tsl_5way_1shots_all_seeds.txt">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/classification/ssv2/inference_ssv2_tsl_5way_1shots_all_seeds.sh">from_episodes</a></td>
       <td>N/A</td>
       <th>N/A</th>
     </tr>
     <tr>
       <th>mean</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/inference_ssv2_mean_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/inference_loader_ssv2_mean_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/train_ssv2_mean_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/inference_ssv2_mean_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/inference_loader_ssv2_mean_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/mean/train_ssv2_mean_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>max</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/inference_ssv2_max_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/inference_loader_ssv2_max_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/train_ssv2_max_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/inference_ssv2_max_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/inference_loader_ssv2_max_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/max/train_ssv2_max_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>chamfer++</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/inference_ssv2_chamfer++_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/inference_loader_ssv2_chamfer++_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/train_ssv2_chamfer++_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/inference_ssv2_chamfer++_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/inference_loader_ssv2_chamfer++_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/chamfer++/train_ssv2_chamfer++_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>diagonal</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/inference_ssv2_diag_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/inference_loader_ssv2_diag_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/train_ssv2_diag_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/inference_ssv2_diag_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/inference_loader_ssv2_diag_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/diag/train_ssv2_diag_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>linear</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/inference_ssv2_linear_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/inference_loader_ssv2_linear_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/train_ssv2_linear_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/inference_ssv2_linear_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/inference_loader_ssv2_linear_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/linear/train_ssv2_linear_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>otam</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/inference_ssv2_otam_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/inference_loader_ssv2_otam_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/train_ssv2_otam_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/inference_ssv2_otam_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/inference_loader_ssv2_otam_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/otam/train_ssv2_otam_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>trx</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_ssv2_trx_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_loader_ssv2_trx_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/train_ssv2_trx_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_ssv2_trx_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/inference_loader_ssv2_trx_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/trx/train_ssv2_trx_5way_1shots_seed1.sh">train</a></td>
     </tr>
     <tr>
       <th>visil</th>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/inference_ssv2_visil_5way_1shots_all_seeds.txt">from_episodes</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/inference_loader_ssv2_visil_5way_1shots_all_seeds.txt">from_loader</a></td>
-      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/train_ssv2_visil_5way_1shots_seed1.txt">train</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/inference_ssv2_visil_5way_1shots_all_seeds.sh">from_episodes</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/inference_loader_ssv2_visil_5way_1shots_all_seeds.sh">from_loader</a></td>
+      <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/ssv2/visil/train_ssv2_visil_5way_1shots_seed1.sh">train</a></td>
     </tr>
   </tbody>
 </table>
