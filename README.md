@@ -51,6 +51,9 @@ pip install tensorboard
 pip install einops
 pip install ffmpeg
 pip install pandas
+
+or use
+pip install -r requirements.txt
 ```
 </details>
 
@@ -102,7 +105,7 @@ DATASET=ssv2
 
 TEMPORAL_MATCHING_REPO_DIR=${ROOT_REPO_DIR}/temporal_matching
 cd ${TEMPORAL_MATCHING_REPO_DIR}
-source ENV/bin/activate
+source ENV/bin/activate  # ENV is the name of the environment
 
 for SEED in 1 5 10
 do
@@ -170,7 +173,7 @@ TEST_DIR=${ROOT_FEATURE_DIR}/${DATASET}/test
 
 TEMPORAL_MATCHING_REPO_DIR=${ROOT_REPO_DIR}/temporal_matching
 cd ${TEMPORAL_MATCHING_REPO_DIR}
-source ENV/bin/activate
+source ENV/bin/activate # ENV is the name of the environment
 
 for SEED in 1 5 10
 do
@@ -251,7 +254,7 @@ rm -r ${CHECKPOINT_DIR_TRAIN}
 
 TEMPORAL_MATCHING_REPO_DIR=${ROOT_REPO_DIR}/temporal_matching
 cd ${TEMPORAL_MATCHING_REPO_DIR}
-source ENV/bin/activate
+source ENV/bin/activate # ENV is the name of the environment
 
 python run_matching.py \
 --dataset_name ${DATASET} \
