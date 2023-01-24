@@ -9,7 +9,7 @@ In the paper, we provide results for the following datasets:
 
 First you need to download the videos and extract the video frames.
 We use the few-shot splits (train/val/test) from 
-[TSL](https://github.com/xianyongqin/few-shot-video-classification/data), to be able to train and
+[TSL](https://github.com/xianyongqin/few-shot-video-classification/tree/main/data), to be able to train and
 evaluate the 64-classes classifier in a similar fashion.
 
 Because the [kinetics dataset](https://www.deepmind.com/open-source/kinetics) may change over time (videos are continually removed from 

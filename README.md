@@ -152,7 +152,7 @@ To run inference for a given matching function on pre-saved episodes, you need t
 * TEST_SEED (the number you like)
 
 And then run the script. Each script is different depending on the matching function, so please
-refer to [scripts summary](#evaluation-and-training-scripts-summary) 
+refer to [scripts summary](#scripts-summary) 
 to find the one you need. For example, with Chamfer++ matching, run
 
 <details>
@@ -223,7 +223,7 @@ each method
 
 And then run the training script. Each script is different depending on the matching function, so 
 please refer to the 
-[scripts summary](#evaluation-and-training-scripts-summary) to find the one you need. 
+[scripts summary](#scripts-summary) to find the one you need. 
 For example, with Chamfer++ matching, run 
 <details>
   <summary> <b> Code </b> </summary>
