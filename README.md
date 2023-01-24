@@ -142,7 +142,7 @@ You first need to
 * [download the pre-trained models for multiple seeds](https://github.com/jbertrand89/temporal_matching/blob/main/MODEL_ZOO.md)
 
 
-To run inference for a given matching function on pre-saved episodes, you need to specify:
+To run inference for a given matching function, you need to specify:
 * ROOT_FEATURE_DIR (as defined in [Download pre-saved features](https://github.com/jbertrand89/temporal_matching/blob/main/DATA_PREPARATION.md#download-pre-saved-features))
 * CHECKPOINT_DIR (as defined in [Model ZOO](https://github.com/jbertrand89/temporal_matching/blob/main/MODEL_ZOO.md))
 * ROOT_REPO_DIR (as defined in [Installation](#installation))
