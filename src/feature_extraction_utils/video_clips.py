@@ -69,13 +69,38 @@ def load_clips(video_dir: str, spatial_transform, clip_length: int):
     spatial_transform.randomize_parameters()
     transformed_clips = []
     for clip in clips:
-        transformed_clip = [spatial_transform(img) for img in clip]
-        transformed_clip = torch.stack(transformed_clip, 0).permute(1, 0, 2, 3)
+        transformed_clip = apply_clip_transformations(clip, spatial_transform)
         transformed_clips.append(transformed_clip)
 
     transformed_clips = torch.stack(transformed_clips, dim=0)
 
     return transformed_clips, clip_frame_names
+
+
+def load_clip_from_dir(clip_dir, spatial_transform):
+    """ Loads one clip and apply the clip spatial transformation
+
+    :param clip_dir: directory containing the clip images
+    :param spatial_transform: spatial transformations to be applied to each frame of the clip
+    :return: tensor containing all the possible clips after spatial transformation
+    """
+    clip_images = [
+        pil_loader(os.path.join(clip_dir, filename)) for filename in sorted(os.listdir(clip_dir))
+    ]
+    clips = [apply_clip_transformations(clip_images, spatial_transform)]
+    return torch.stack(clips, dim=0)
+
+
+def apply_clip_transformations(clip_images, spatial_transform):
+    """ Applies the same spatial transformations to each clip frame in clip_images.
+
+    :param clip_images: the clip frames
+    :param spatial_transform: spatial transformations to be applied to each frame of the clip
+    :return: tensor containing the clip frames after spatial transformation
+    """
+    clip = [spatial_transform(img) for img in clip_images]
+    clip = torch.stack(clip, 0).permute(1, 0, 2, 3)
+    return clip
 
 
 @torch.no_grad()

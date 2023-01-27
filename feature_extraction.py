@@ -10,6 +10,7 @@ sys.path.append(path)
 
 from src.feature_extraction_utils.spatial_transformations import get_spatial_transorm
 from src.feature_extraction_utils.video_clips import load_clips, get_clip_embeddings
+from src.feature_extraction_utils.video_clips import load_clip_from_dir
 from models import r2plus1d
 
 
@@ -66,20 +67,24 @@ def parse_command_line():
         help='Number of classes the pretrained model was trained on'
     )
 
+    parser.add_argument(
+        '--method', type=str, default="extract_from_dataset",
+        choices=["extract_from_dataset", "extract_from_video", "extract_from_clips"])
+
     # DIRECTORIES
     parser.add_argument(
         '--input_video_dir', type=str, default=None,
-        help='Video directory to be extracted. If not None, it will only extract the features of '
-             'the video. Otherwise, you need to define input_dataset_dir.')
-    parser.add_argument(
-        '--output_video_dir', type=str, default=None,
-        help='Directory where to save the features.')
+        help='Video directory to be extracted. Must be defined if method=extract_from_dataset.')
     parser.add_argument(
         '--input_dataset_dir', type=str, default=None,
-        help='Dataset root directory. Must be defined if input_video_dir is None.')
+        help='Dataset root directory. Must be defined if method=extract_from_dataset.')
     parser.add_argument(
-        '--output_dataset_dir', type=str, default=None,
-        help='Features root directory. Must be defined if you extract features for a dataset')
+        '--input_clip_dir', type=str, default=None,
+        help='Clip root directory. Must be defined if method=extract_from_clips.')
+    parser.add_argument(
+        '--output_dir', type=str,
+        help='Directory where to save the features. Must be defined.')
+
     parser.add_argument('--split', type=str, help='Dataset split name')
     parser.add_argument(
         '--class_ids', type=str, nargs='+', default=None,
@@ -94,21 +99,24 @@ def parse_command_line():
 def get_paths(cmd_args):
     """
     Get the source paths of the videos to be extracted and their corresponding destination paths.
-    If a video directory is provided (cmd_args.input_video_dir) only process this one, otherwise process
-    the dataset split.
+    It can be one video only (cmd_args.extract_from_video is True) or all the videos of a dataset
+    (cmd_args.extract_from_dataset).
 
     :param cmd_args: command line parameters
     :return: list of tuples of all the videos to be embedded. Each feature contains the input video
        directory and the output feature directory.
     """
-    #
-    if cmd_args.input_video_dir:
-        os.makedirs(cmd_args.output_video_dir, exist_ok=True)
-        paths = [(cmd_args.input_video_dir, cmd_args.output_video_dir)]
-    elif cmd_args.input_dataset_dir is None:
-        raise Exception("You need to define input_video_dir or input_dataset_dir")
-    else:
+    if cmd_args.method == "extract_from_video":
+        if cmd_args.input_video_dir is None:
+            raise Exception("You need to specify input_video_dir.")
+        os.makedirs(cmd_args.output_dir, exist_ok=True)
+        paths = [(cmd_args.input_video_dir, cmd_args.output_dir)]
+    elif cmd_args.method == "extract_from_dataset":
+        if cmd_args.input_dataset_dir is None:
+            raise Exception("You need to specify input_dataset_dir")
         paths = get_dataset_paths(cmd_args)
+    else:
+        raise Exception("Not implemented")
 
     return paths
 
@@ -123,7 +131,7 @@ def get_dataset_paths(cmd_args):
        directory and the output feature directory.
     """
     paths = []
-    output_split_dir = os.path.join(cmd_args.output_dataset_dir, cmd_args.split)
+    output_split_dir = os.path.join(cmd_args.output_dir, cmd_args.split)
     input_split_dir = os.path.join(cmd_args.input_dataset_dir, cmd_args.split)
 
     # get the class names corresponding to the class_ids. If class_ids is None, get all the
@@ -239,6 +247,41 @@ def extract_video_features(video_dir, output_dir, spatial_transform, clip_length
     print(f"Saved features in {output_dir}")
 
 
+def extract_feature_from_saved_clips(cmd_args, spatial_transform, model):
+    """ Extract the features for each clip pre-saved in cmd_args.input_clip_dir.
+    cmd_args.input_clip_dir format is:
+    ├── input_clip_dir
+    │   ├── clip_name_1
+    │   │   ├── frame_000000.jpg
+    │   │   ├── frame_000001.jpg
+    │   │   ├── frame_000002.jpg
+    │   │   └── ...
+    │   ├── clip_name_2
+    │   └── ...
+    :param cmd_args: command line parameters
+    :param spatial_transform: spatial transformations to be applied to each frame of the clip
+    :param model: backbone model
+    """
+    os.makedirs(cmd_args.output_dir, exist_ok=True)
+    for clip_name in os.listdir(cmd_args.input_clip_dir):
+        clip_dir = os.path.join(cmd_args.input_clip_dir, clip_name)
+        print(f"clip_dir {clip_dir}")
+
+        # Loads the clip
+        clips = load_clip_from_dir(clip_dir, spatial_transform)
+        print(f"clip {clips.shape}")
+
+        # Apply the model
+        with torch.no_grad():
+            features = get_clip_embeddings(clips, model, cmd_args.batch_size)
+        print(f"features {features.shape}")
+
+        # Save the features
+        feature_filename = os.path.join(cmd_args.output_dir, f"{clip_name}.pth")
+        torch.save(features, feature_filename)
+        print(f"feature_filename {feature_filename} {features.shape}")
+
+
 def save_logs(cmd_args, processed):
     """ Saves the processed logs in a file, to track if there are issues.
 
@@ -276,13 +319,18 @@ if __name__ == '__main__':
     model = get_model(cmd_args)
     model.eval()
 
-    # Get the video paths
-    paths = get_paths(cmd_args)
+    if cmd_args.method == "extract_from_clips":
+        t0 = time.time()
+        processed = extract_feature_from_saved_clips(cmd_args, spatial_transform, model)
+        t1 = time.time()
+    else:
+        # Get the video paths
+        paths = get_paths(cmd_args)
 
-    # Extract features
-    t0 = time.time()
-    processed = extract_features_from_paths(cmd_args, paths, spatial_transform, model)
-    t1 = time.time()
+        # Extract features
+        t0 = time.time()
+        processed = extract_features_from_paths(cmd_args, paths, spatial_transform, model)
+        t1 = time.time()
     print(f"extracted in  {t1 - t0} ")
 
     # Saving logs
