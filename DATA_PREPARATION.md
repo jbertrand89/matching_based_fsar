@@ -170,7 +170,7 @@ cd ${FEATURE_DATASET_DIR}
 
 for SPLIT in val test train
 do
-    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/feature_saved/ssv2/${SPLIT}.tar.gz 
+    wget http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/data/feature_saved/${DATASET}/${SPLIT}.tar.gz 
     tar -xzf ${SPLIT}.tar.gz 
     rm -r ${SPLIT}.tar.gz 
 done
