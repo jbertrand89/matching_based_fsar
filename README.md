@@ -89,9 +89,10 @@ To run inference for a given matching function on pre-saved episodes, you need t
 * SHOT (number of example per class between 1/5)
 * DATASET (between ssv2/kinetics/ucf101)
 
-And then run the script. Each script is different depending on the matching function, so please
-refer to the model zoo to find the one you need. For example, with Chamfer++ matching 
-run
+And then run the **evaluation on saved episodes** script. 
+Each script is different depending on the matching function, so please
+refer to [scripts summary](#scripts-summary) to find the one you need. 
+For example, with Chamfer++ matching, run
 <details>
   <summary> <b> Code </b> </summary>
 
@@ -154,7 +155,7 @@ To run inference for a given matching function, you need to specify:
 * DATASET (between ssv2/kinetics/ucf101)
 * TEST_SEED (the number you like)
 
-And then run the script. Each script is different depending on the matching function, so please
+And then run the **evaluation, general case** script. Each script is different depending on the matching function, so please
 refer to [scripts summary](#scripts-summary) 
 to find the one you need. For example, with Chamfer++ matching, run
 
@@ -224,7 +225,7 @@ each method
 * GLOBAL_TEMPERATURE
 * TEMPERATURE_WEIGHT
 
-And then run the training script. Each script is different depending on the matching function, so 
+And then run the **training** script. Each script is different depending on the matching function, so 
 please refer to the 
 [scripts summary](#scripts-summary) to find the one you need. 
 For example, with Chamfer++ matching, run 
