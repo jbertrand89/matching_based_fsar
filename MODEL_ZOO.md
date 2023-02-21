@@ -121,7 +121,7 @@ There is one model per seed (1/5/10).
       <th>max</th>
       <th>R2+1D</th>
       <th>95.3 +- 0.1</th>
-      <th>98.3 +- 0.1</th>
+      <th>98.3 +- 0.0</th>
       <td><a href="http://ptak.felk.cvut.cz/personal/bertrjul/temporal_matching/scripts/matching/kinetics/max/download_kinetics_max_5way_all_shots_all_seeds.sh">download</a></td>
     </tr>
     <tr>
