@@ -1,9 +1,9 @@
 # Rethinking matching-based few-shot action recognition
 
-[[arXiv]()] [[project page](https://jbertrand89.github.io/temporalmatching/)]
+[[arXiv]()] [[project page](https://jbertrand89.github.io/matching-based-fsar/)]
 
 This repository contains official code for our paper 
-[Rethinking matching-based few-shot action recognition](https://jbertrand89.github.io/temporal_matching_project_page/).
+[Rethinking matching-based few-shot action recognition](https://jbertrand89.github.io/matching-based-fsar/).
 
 ## What do we have here?
 
