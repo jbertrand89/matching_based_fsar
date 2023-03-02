@@ -1,6 +1,6 @@
 # Rethinking matching-based few-shot action recognition
 
-[[arXiv]()] [[project page](https://jbertrand89.github.io/temporal_matching_project_page/)]
+[[arXiv]()] [[project page](https://jbertrand89.github.io/temporalmatching/)]
 
 This repository contains official code for our paper 
 [Rethinking matching-based few-shot action recognition](https://jbertrand89.github.io/temporal_matching_project_page/).
